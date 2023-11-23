@@ -1,0 +1,15 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "aoc-2023-dart-day-generator",
+            "request": "launch",
+            "type": "dart",
+            "program": "bin/day_generator.dart",
+            "args": ["0"]
+        }
+    ]
+}

@@ -18,8 +18,13 @@ void main(List<String?> args) {
   if (args.length == 1 && args[0].isAllArgument()) {
     onlyShowLast = false;
   }
-
-  onlyShowLast ? days.last.printSolutions() : days.forEach((day) => day.printSolutions());
+  if (onlyShowLast) {
+    days.last.printSolutions();
+  } else {
+    for (var day in days) {
+      day.printSolutions();
+    }
+  }
 }
 
 void printHelper() {

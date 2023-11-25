@@ -1,2 +1,15 @@
-A sample command-line application with an entrypoint in `bin/`, library code
-in `lib/`, and example unit test in `test/`.
+# Advent of Code 2023 using Dart 3.2
+
+![](https://img.shields.io/badge/day%20📅-25-blue)![](https://img.shields.io/badge/days%20completed-0-red)![](https://img.shields.io/badge/stars%20⭐-0-yellow)
+
+Initially I had in mind to go with Rust, but I does not feel like my language yet. Therefore I go with Dart again as I did 2022.
+
+The template is based on the idea of https://github.com/S-ecki/AdventOfCode-Starter-Dart.
+
+<!--- advent_readme_stars table --->
+
+## Diary
+
+### Day 01
+
+

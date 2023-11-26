@@ -1,5 +1,5 @@
 name: aoc_2023_dart
-description: A sample command-line application.
+description: Advent of Code 2023 in Dart,
 version: 0.1.0
 # repository: https://github.com/my_org/my_repo
 
@@ -16,8 +16,10 @@ dependencies:
   talker: ^3.1.4
   timing: ^1.0.1
   tuple: ^2.0.2
-  # path: ^1.8.0
+  path: ^1.8.0
 
 dev_dependencies:
+  build_runner: ^2.4.6
+  build_test: ^2.2.1
   lints: ^2.0.0
   test: ^1.21.0

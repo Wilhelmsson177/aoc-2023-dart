@@ -8,7 +8,8 @@ abstract class GenericDay {
   final InputUtil input;
   final String inputType;
 
-  GenericDay(this.day, [this.inputType = "in"]) : input = InputUtil(day, inputType);
+  GenericDay(this.day, [this.inputType = "in"])
+      : input = InputUtil(day, inputType);
 
   dynamic parseInput();
   int solvePart1();
@@ -27,10 +28,13 @@ abstract class GenericDay {
     trackerPart2.track(() {
       resultPart2 = solvePart2();
     });
-    print("-------------------------");
+
+    print("----------------------------------------------");
     print("         Day ${day.toString().padLeft(2, '0')}        ");
-    print("Solution for puzzle one: $resultPart1 (${trackerPart1.duration.inMilliseconds})");
-    print("Solution for puzzle two: $resultPart2 (${trackerPart2.duration.inMilliseconds})");
+    print(
+        "Solution for puzzle one: $resultPart1 (${trackerPart1.duration.inMilliseconds} ms)");
+    print(
+        "Solution for puzzle two: $resultPart2 (${trackerPart2.duration.inMilliseconds} ms)");
     print("\n");
   }
 }

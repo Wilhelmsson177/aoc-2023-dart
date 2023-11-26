@@ -43,16 +43,20 @@ void main(List<String> args) async {
   // Create lib file
   final dayFileName = 'day${dayOfMonth.toString().padLeft(2, '0')}.dart';
   unawaited(
-    File('lib/solutions/$dayFileName').writeAsString(dayTemplate(dayOfMonth, year)),
+    File('lib/solutions/$dayFileName')
+        .writeAsString(dayTemplate(dayOfMonth, year)),
   );
   // Create test file
-  final dayTestFileName = 'test_day${dayOfMonth.toString().padLeft(2, '0')}.dart';
+  final dayTestFileName =
+      'test_day${dayOfMonth.toString().padLeft(2, '0')}.dart';
 
-  File('test/$dayTestFileName').writeAsStringSync(dayTestTemplate(dayOfMonth, year));
+  File('test/$dayTestFileName')
+      .writeAsStringSync(dayTestTemplate(dayOfMonth, year));
 
   final exportFile = File('lib/solutions/index.dart');
   final exports = exportFile.readAsLinesSync();
-  String content = "export 'day${dayOfMonth.toString().padLeft(2, '0')}.dart';\n";
+  String content =
+      "export 'day${dayOfMonth.toString().padLeft(2, '0')}.dart';\n";
   bool found = false;
   // check if line already exists
   for (final line in exports) {
@@ -81,11 +85,13 @@ void main(List<String> args) async {
   talker.good('All set, Good luck!');
 }
 
-Future<void> _downloadInputFile(String year, int dayOfMonth, String session) async {
+Future<void> _downloadInputFile(
+    String year, int dayOfMonth, String session) async {
   // Create input file
   talker.good('Loading input from adventofcode.com...');
   try {
-    final request = await HttpClient().getUrl(Uri.parse('https://adventofcode.com/$year/day/$dayOfMonth/input'));
+    final request = await HttpClient().getUrl(
+        Uri.parse('https://adventofcode.com/$year/day/$dayOfMonth/input'));
     request.cookies.add(Cookie("session", session));
     final response = await request.close();
     final dataPath = 'input/${dayOfMonth.toString().padLeft(2, '0')}.in';
@@ -97,7 +103,8 @@ Future<void> _downloadInputFile(String year, int dayOfMonth, String session) asy
 
 void _createExampleFile(int dayOfMonth, int exampleValue) {
   // Create an example file
-  final examplePath = File('input/${dayOfMonth.toString().padLeft(2, '0')}.example');
+  final examplePath =
+      File('input/${dayOfMonth.toString().padLeft(2, '0')}.example');
   examplePath.writeAsStringSync(exampleValue.toString());
 }
 
@@ -110,7 +117,8 @@ void addDayToMain(int dayNumber) {
   if (contents.contains("Day$dayString(),")) {
     return;
   }
-  String newContents = contents.replaceAll('  //{add_me}', '  Day$dayString(),\n  //{add_me}');
+  String newContents =
+      contents.replaceAll('  //{add_me}', '  Day$dayString(),\n  //{add_me}');
 
   file.writeAsStringSync(newContents);
 }

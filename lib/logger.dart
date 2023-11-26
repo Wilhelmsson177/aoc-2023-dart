@@ -1,3 +1,3 @@
-  import 'package:talker/talker.dart';
+import 'package:talker/talker.dart';
 
-  final talker = Talker();
+final talker = Talker();

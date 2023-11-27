@@ -31,11 +31,21 @@ void main(List<String> args) async {
       help: 'Add the example solution, so it will be put into the test.',
       callback: (input) => dayOfMonth = int.parse(input!));
 
+  parser.addFlag(
+    'help',
+    abbr: 'h',
+    negatable: false,
+    help: 'Show this help dialog.',
+    callback: (help) {
+      if (help) {
+        print(parser.usage);
+        exit(0);
+      }
+    },
+  );
+
   ArgResults argResults = parser.parse(args);
-  if (argResults.arguments.isEmpty) {
-    print(parser.usage);
-    exit(0);
-  }
+
   talker.debug("You have input the args ${argResults.arguments}");
   // Inform user which day will be generated
   talker.good("Day $dayOfMonth will be generated.");
@@ -118,7 +128,7 @@ void addDayToMain(int dayNumber) {
     return;
   }
   String newContents =
-      contents.replaceAll('  //{add_me}', '  Day$dayString(),\n  //{add_me}');
+      contents.replaceAll('  //{add_me}', ' Day$dayString(),\n  //{add_me}');
 
   file.writeAsStringSync(newContents);
 }

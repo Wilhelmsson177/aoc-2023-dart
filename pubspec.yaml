@@ -17,6 +17,7 @@ dependencies:
   timing: ^1.0.1
   tuple: ^2.0.2
   path: ^1.8.0
+  dart_console: ^1.2.0
 
 dev_dependencies:
   build_runner: ^2.4.6

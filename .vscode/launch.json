@@ -9,7 +9,19 @@
             "request": "launch",
             "type": "dart",
             "program": "bin/day_generator.dart",
-            "args": ["0"]
+            "args": [
+                "0"
+            ]
+        },
+        {
+            "name": "aoc-2023-dart-day",
+            "request": "launch",
+            "type": "dart",
+            "program": "bin/aoc_2023_dart.dart",
+            "args": [
+                "-d",
+                "0"
+            ]
         }
     ]
 }

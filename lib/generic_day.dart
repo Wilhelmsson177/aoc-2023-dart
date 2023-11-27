@@ -1,8 +1,8 @@
 import 'input.dart';
 import 'package:timing/timing.dart';
 
-/// Provides the [InputUtil] for given day and a [printSolution] method to show
-/// the puzzle solutions for given day.
+/// Provides the [InputUtil] for given day and a [getSolutionX] method to return
+/// the puzzle solutions for given day and the duration.
 abstract class GenericDay {
   final int day;
   final InputUtil input;
@@ -15,26 +15,25 @@ abstract class GenericDay {
   int solvePart1();
   int solvePart2();
 
-  void printSolutions() {
-    int resultPart1 = -1;
-    int resultPart2 = -1;
+  ({int result, int duration}) getSoulutionA() {
+    int result = -1;
+    var tracker = SyncTimeTracker();
 
-    var trackerPart1 = SyncTimeTracker();
-    var trackerPart2 = SyncTimeTracker();
-
-    trackerPart1.track(() {
-      resultPart1 = solvePart1();
-    });
-    trackerPart2.track(() {
-      resultPart2 = solvePart2();
+    tracker.track(() {
+      result = solvePart1();
     });
 
-    print("----------------------------------------------");
-    print("         Day ${day.toString().padLeft(2, '0')}        ");
-    print(
-        "Solution for puzzle one: $resultPart1 (${trackerPart1.duration.inMilliseconds} ms)");
-    print(
-        "Solution for puzzle two: $resultPart2 (${trackerPart2.duration.inMilliseconds} ms)");
-    print("\n");
+    return (result: result, duration: tracker.duration.inMilliseconds);
+  }
+
+  ({int result, int duration}) getSoulutionB() {
+    int result = -1;
+    var tracker = SyncTimeTracker();
+
+    tracker.track(() {
+      result = solvePart2();
+    });
+
+    return (result: result, duration: tracker.duration.inMilliseconds);
   }
 }

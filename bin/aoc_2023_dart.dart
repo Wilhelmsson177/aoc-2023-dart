@@ -1,6 +1,7 @@
 import 'dart:core';
 import 'dart:io';
 
+import 'package:aoc_2023_dart/logger.dart';
 import 'package:aoc_2023_dart/solutions/index.dart';
 import 'package:aoc_2023_dart/generic_day.dart';
 import 'package:args/args.dart';
@@ -18,17 +19,24 @@ void main(List<String> args) {
   final parser = ArgParser();
   bool allDays = false;
 
-  parser.addOption('day',
-      abbr: 'd',
-      defaultsTo: dayOfMonth.toString(),
-      help: 'Select the day to execute',
-      callback: (day) => dayOfMonth = int.parse(day!));
-
   parser.addFlag('all',
       abbr: 'a',
       negatable: false,
       help: 'Executes all days',
       callback: (input) => allDays = input);
+  parser.addOption('day',
+      abbr: 'd',
+      defaultsTo: dayOfMonth.toString(),
+      help: 'Select the day to execute', callback: (day) {
+    int parsedDay = int.parse(day!);
+    if (possibleDays.containsKey(parsedDay)) {
+      dayOfMonth = parsedDay;
+    } else if (!allDays) {
+      talker
+          .error("The selected day ($parsedDay) is not available for solving!");
+      exit(1);
+    }
+  });
 
   parser.addFlag(
     'help',

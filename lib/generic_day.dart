@@ -1,6 +1,11 @@
 import 'input.dart';
 import 'package:timing/timing.dart';
 
+typedef SolveFunction = int Function();
+typedef SolutionWithDuration = (int result, Duration duration);
+
+enum Part { a, b }
+
 /// Provides the [InputUtil] for given day and a [getSolutionX] method to return
 /// the puzzle solutions for given day and the duration.
 abstract class GenericDay {
@@ -12,28 +17,22 @@ abstract class GenericDay {
       : input = InputUtil(day, inputType);
 
   dynamic parseInput();
-  int solvePart1();
-  int solvePart2();
+  int solvePartA();
+  int solvePartB();
 
-  ({int result, int duration}) getSoulutionA() {
+  SolutionWithDuration getSoulution(Part part) {
     int result = -1;
     var tracker = SyncTimeTracker();
-
+    SolveFunction func;
+    if (part == Part.a) {
+      func = solvePartA;
+    } else {
+      func = solvePartB;
+    }
     tracker.track(() {
-      result = solvePart1();
+      result = func();
     });
 
-    return (result: result, duration: tracker.duration.inMilliseconds);
-  }
-
-  ({int result, int duration}) getSoulutionB() {
-    int result = -1;
-    var tracker = SyncTimeTracker();
-
-    tracker.track(() {
-      result = solvePart2();
-    });
-
-    return (result: result, duration: tracker.duration.inMilliseconds);
+    return (result, tracker.duration);
   }
 }

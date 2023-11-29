@@ -3,3 +3,4 @@
 .dart_tool/
 .env
 input/*.in
+*secret*

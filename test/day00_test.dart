@@ -3,8 +3,10 @@ import 'package:aoc/solutions/index.dart';
 
 void main() {
   test('Day00', () async {
-    var day = Day00("example");
-    expect(day.solvePartA(), 0);
+    String input = "0";
+    int expectation = 0;
+    var day = Day00(input);
+    expect(day.solvePartA(), expectation);
     expect(day.solvePartB(), 0);
   });
 }

@@ -9,8 +9,13 @@ class InputUtil {
   final String inputType;
 
   InputUtil(this.day, [this.inputType = "in"]) {
-    _inputAsString = _readInputDay();
-    _inputAsList = _readInputDayAsList();
+    if (inputType == "in") {
+      _inputAsString = _readInputDay();
+      _inputAsList = _readInputDayAsList();
+    } else {
+      _inputAsString = inputType;
+      _inputAsList = inputType.split("\n");
+    }
   }
 
   String _createInputPath() {

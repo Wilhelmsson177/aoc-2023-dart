@@ -67,8 +67,8 @@ void main(List<String> args) async {
   final dayTestFileName =
       'day${dayOfMonth.toString().padLeft(2, '0')}_test.dart';
 
-  File('test/$dayTestFileName')
-      .writeAsStringSync(dayTestTemplate(dayOfMonth, exampleExpectation));
+  File('test/$dayTestFileName').writeAsStringSync(
+      dayTestTemplate(dayOfMonth, exampleInput, exampleExpectation));
 
   final exportFile = File('lib/solutions/index.dart');
   final exports = exportFile.readAsLinesSync();
@@ -95,10 +95,6 @@ void main(List<String> args) async {
 
   // Create input file
   await _downloadInputFile(year, dayOfMonth, session);
-
-  // Create an example file
-  _createExampleFile(dayOfMonth, exampleInput);
-
   talker.good('All set, Good luck!');
 }
 
@@ -116,13 +112,6 @@ Future<void> _downloadInputFile(
   } on Error catch (e) {
     talker.error('Error loading file: $e');
   }
-}
-
-void _createExampleFile(int dayOfMonth, String exampleInput) {
-  // Create an example file
-  final examplePath =
-      File('input/${dayOfMonth.toString().padLeft(2, '0')}.example');
-  examplePath.writeAsStringSync(exampleInput);
 }
 
 void addDayToMain(int dayNumber) {
@@ -172,7 +161,8 @@ class Day$dayString extends GenericDay {
 ''';
 }
 
-String dayTestTemplate(int dayNumber, int exampleExpectation) {
+String dayTestTemplate(
+    int dayNumber, String exampleInput, int exampleExpectation) {
   String dayString = dayNumber.toString().padLeft(2, '0');
   return '''
 import 'package:test/test.dart';
@@ -180,8 +170,10 @@ import 'package:aoc/solutions/index.dart';
 
 void main() {
   test('Day$dayString', () async {
-    var day = Day$dayString("example");
-    expect(day.solvePartA(), $exampleExpectation);
+    String input = "$exampleInput";
+    int expectation = $exampleExpectation;
+    var day = Day$dayString(input);
+    expect(day.solvePartA(), expectation);
     expect(day.solvePartB(), 0);
   });
 }

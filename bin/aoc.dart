@@ -10,37 +10,16 @@ import 'package:dart_console/dart_console.dart';
 /// Map holding all the solution classes.
 final List<GenericDay> dayList = [
   Day00(),
-  Day01(),
-  Day02(),
   //{add_me}
 ];
 final Map<int, GenericDay> possibleDays = dayList.asMap();
 
 void main(List<String> args) {
   var env = DotEnv(includePlatformEnvironment: true)..load();
-  int year = int.parse(env.getOrElse("AOC_YEAR", () => "2019"));
+  int year = int.parse(env.getOrElse("AOC_YEAR", () => "2023"));
   int dayOfMonth = DateTime.now().day;
   final parser = ArgParser();
   bool allDays = false;
-
-  parser.addFlag('all',
-      abbr: 'a',
-      negatable: false,
-      help: 'Executes all days',
-      callback: (input) => allDays = input);
-  parser.addOption('day',
-      abbr: 'd',
-      defaultsTo: dayOfMonth.toString(),
-      help: 'Select the day to execute', callback: (day) {
-    int parsedDay = int.parse(day!);
-    if (possibleDays.containsKey(parsedDay)) {
-      dayOfMonth = parsedDay;
-    } else if (!allDays) {
-      talker
-          .error("The selected day ($parsedDay) is not available for solving!");
-      exit(1);
-    }
-  });
 
   parser.addOption("loglevel",
       abbr: "l",
@@ -61,6 +40,26 @@ void main(List<String> args) {
       }
     },
   );
+
+  parser.addFlag('all',
+      abbr: 'a',
+      negatable: false,
+      help: 'Executes all days',
+      callback: (input) => allDays = input);
+
+  parser.addOption('day',
+      abbr: 'd',
+      defaultsTo: dayOfMonth.toString(),
+      help: 'Select the day to execute', callback: (day) {
+    int parsedDay = int.parse(day!);
+    if (possibleDays.containsKey(parsedDay)) {
+      dayOfMonth = parsedDay;
+    } else if (!allDays) {
+      talker
+          .error("The selected day ($parsedDay) is not available for solving!");
+      exit(1);
+    }
+  });
 
   parser.parse(args);
 

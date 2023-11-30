@@ -1,20 +1,24 @@
 import 'dart:core';
 import 'dart:io';
-
-import 'package:aoc_2023_dart/logger.dart';
-import 'package:aoc_2023_dart/solutions/index.dart';
-import 'package:aoc_2023_dart/generic_day.dart';
+import 'package:dotenv/dotenv.dart';
+import 'package:aoc/logger.dart';
+import 'package:aoc/solutions/index.dart';
+import 'package:aoc/generic_day.dart';
 import 'package:args/args.dart';
 import 'package:dart_console/dart_console.dart';
 
 /// Map holding all the solution classes.
 final List<GenericDay> dayList = [
   Day00(),
+  Day01(),
+  Day02(),
   //{add_me}
 ];
 final Map<int, GenericDay> possibleDays = dayList.asMap();
 
 void main(List<String> args) {
+  var env = DotEnv(includePlatformEnvironment: true)..load();
+  int year = int.parse(env.getOrElse("AOC_YEAR", () => "2019"));
   int dayOfMonth = DateTime.now().day;
   final parser = ArgParser();
   bool allDays = false;
@@ -38,6 +42,13 @@ void main(List<String> args) {
     }
   });
 
+  parser.addOption("loglevel",
+      abbr: "l",
+      defaultsTo: "info",
+      help: "Set the log level of the application", callback: (logLevel) {
+    initializeLogging(logLevel!);
+  });
+
   parser.addFlag(
     'help',
     abbr: 'h',
@@ -55,19 +66,22 @@ void main(List<String> args) {
 
   Solver solver;
   if (allDays) {
-    solver = Solver(possibleDays.keys.toList());
+    solver = Solver(possibleDays.keys.toList(), year);
   } else {
-    solver = Solver([dayOfMonth]);
+    solver = Solver([dayOfMonth], year);
   }
   solver.solve();
 }
 
+typedef SolutionsOfDay = (SolutionWithDuration, SolutionWithDuration);
+
 class Solver {
   final console = Console();
   final List<int> days;
-  Map results = {};
+  final int year;
+  Map<int, SolutionsOfDay> results = {};
 
-  Solver(this.days);
+  Solver(this.days, this.year);
 
   void solve() {
     _printIntroduction();
@@ -99,18 +113,11 @@ class Solver {
     );
 
     for (int index in days) {
-      ({int duration, int result})? partA =
-          possibleDays[index]?.getSoulutionA();
+      SolutionWithDuration partA = possibleDays[index]!.getSoulution(Part.a);
       progressBar.tick();
-      ({int duration, int result})? partB =
-          possibleDays[index]?.getSoulutionB();
+      SolutionWithDuration partB = possibleDays[index]!.getSoulution(Part.b);
       progressBar.tick();
-      results[index] = (
-        resultA: partA?.result,
-        durationA: partA?.duration,
-        resultB: partB?.result,
-        durationB: partB?.duration
-      );
+      results[index] = (partA, partB);
     }
 
     progressBar.complete();
@@ -121,14 +128,14 @@ class Solver {
   }
 
   void _printResults() {
-    List<List<int>> solutions = List.empty(growable: true);
+    List<List<Object>> solutions = List.empty(growable: true);
     for (var result in results.entries) {
       solutions.add([
         result.key,
-        result.value.resultA,
-        result.value.durationA,
-        result.value.resultB,
-        result.value.durationB
+        result.value.$1.$1,
+        result.value.$1.$2.toString(),
+        result.value.$2.$1,
+        result.value.$2.$2.toString()
       ]);
     }
     final table = Table()
@@ -141,7 +148,7 @@ class Solver {
       ..insertColumn(header: 'Solution Part B', alignment: TextAlignment.right)
       ..insertColumn(header: 'Timing Part B', alignment: TextAlignment.right)
       ..insertRows(solutions)
-      ..title = 'The results of Advent of Code 2023';
+      ..title = 'The results of Advent of Code $year';
 
     console.write(table);
   }

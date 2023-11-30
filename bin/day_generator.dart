@@ -5,17 +5,17 @@ import 'dart:core';
 import 'package:dotenv/dotenv.dart';
 import "package:args/args.dart";
 
-import 'package:aoc_2023_dart/logger.dart';
+import 'package:aoc/logger.dart';
 
 /// Small Program to be used to generate files and boilerplate for a given day.\
 /// Call with `dart run day_generator.dart <day>`
 void main(List<String> args) async {
   var env = DotEnv(includePlatformEnvironment: true)..load();
-  int year = int.parse(env.getOrElse("AOC_YEAR", () => "2022"));
+  int year = int.parse(env.getOrElse("AOC_YEAR", () => "2023"));
   String session = env.getOrElse("AOC_SESSION", () => "");
 
   int dayOfMonth = DateTime.now().day;
-  int exampleInput = 0;
+  String exampleInput = "";
   int exampleExpectation = 0;
 
   final parser = ArgParser();
@@ -27,13 +27,13 @@ void main(List<String> args) async {
       callback: (day) => dayOfMonth = int.parse(day!));
 
   parser.addOption('example-input',
-      abbr: 'ei',
+      abbr: 'i',
       defaultsTo: '0',
       help: 'Add the example solution, so it will be put into the test.',
-      callback: (input) => exampleInput = int.parse(input!));
+      callback: (input) => exampleInput = input!);
 
   parser.addOption('example-expectation',
-      abbr: 'ee',
+      abbr: 'e',
       defaultsTo: '0',
       help: 'Add the example solution, so it will be put into the test.',
       callback: (input) => exampleExpectation = int.parse(input!));
@@ -114,15 +114,15 @@ Future<void> _downloadInputFile(
     final dataPath = 'input/${dayOfMonth.toString().padLeft(2, '0')}.in';
     response.pipe(File(dataPath).openWrite());
   } on Error catch (e) {
-    talker.error('Error loading file:', e);
+    talker.error('Error loading file: $e');
   }
 }
 
-void _createExampleFile(int dayOfMonth, int exampleInput) {
+void _createExampleFile(int dayOfMonth, String exampleInput) {
   // Create an example file
   final examplePath =
       File('input/${dayOfMonth.toString().padLeft(2, '0')}.example');
-  examplePath.writeAsStringSync(exampleInput.toString());
+  examplePath.writeAsStringSync(exampleInput);
 }
 
 void addDayToMain(int dayNumber, int year) {
@@ -135,7 +135,7 @@ void addDayToMain(int dayNumber, int year) {
     return;
   }
   String newContents =
-      contents.replaceAll('  //{add_me}', ' Day$dayString(),\n  //{add_me}');
+      contents.replaceAll('  //{add_me}', '  Day$dayString(),\n  //{add_me}');
 
   file.writeAsStringSync(newContents);
 }

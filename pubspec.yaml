@@ -1,5 +1,5 @@
-name: aoc_2023_dart
-description: Advent of Code 2023 in Dart,
+name: aoc
+description: Advent of Code in Dart.
 version: 0.1.0
 # repository: https://github.com/my_org/my_repo
 

@@ -1,4 +1,4 @@
-import 'package:aoc_2023_dart/index.dart';
+import 'package:aoc/index.dart';
 
 /// Every day should extend [GenericDay] to have access to the corresponding
 /// input and a common interface.
@@ -26,13 +26,13 @@ class Day00 extends GenericDay {
   /// The `solvePartX` methods always return a int, the puzzle solution. This
   /// solution will be printed in main.
   @override
-  int solvePart1() {
+  int solvePartA() {
     // TODO implement
     return 0;
   }
 
   @override
-  int solvePart2() {
+  int solvePartB() {
     // TODO implement
     return 0;
   }

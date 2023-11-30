@@ -11,8 +11,9 @@ import 'package:aoc/logger.dart';
 /// Call with `dart run day_generator.dart <day>`
 void main(List<String> args) async {
   var env = DotEnv(includePlatformEnvironment: true)..load();
-  int year = int.parse(env.getOrElse("AOC_YEAR", () => "2023"));
+  int year = int.parse(env.getOrElse("AOC_YEAR", () => "2019"));
   String session = env.getOrElse("AOC_SESSION", () => "");
+  initializeLogging("debug");
 
   int dayOfMonth = DateTime.now().day;
   String exampleInput = "";
@@ -60,15 +61,14 @@ void main(List<String> args) async {
   // Create lib file
   final dayFileName = 'day${dayOfMonth.toString().padLeft(2, '0')}.dart';
   unawaited(
-    File('lib/solutions/$dayFileName')
-        .writeAsString(dayTemplate(dayOfMonth, year)),
+    File('lib/solutions/$dayFileName').writeAsString(dayTemplate(dayOfMonth)),
   );
   // Create test file
   final dayTestFileName =
       'day${dayOfMonth.toString().padLeft(2, '0')}_test.dart';
 
   File('test/$dayTestFileName')
-      .writeAsStringSync(dayTestTemplate(dayOfMonth, year, exampleExpectation));
+      .writeAsStringSync(dayTestTemplate(dayOfMonth, exampleExpectation));
 
   final exportFile = File('lib/solutions/index.dart');
   final exports = exportFile.readAsLinesSync();
@@ -91,7 +91,7 @@ void main(List<String> args) async {
     );
   }
 
-  addDayToMain(dayOfMonth, year);
+  addDayToMain(dayOfMonth);
 
   // Create input file
   await _downloadInputFile(year, dayOfMonth, session);
@@ -125,8 +125,8 @@ void _createExampleFile(int dayOfMonth, String exampleInput) {
   examplePath.writeAsStringSync(exampleInput);
 }
 
-void addDayToMain(int dayNumber, int year) {
-  File file = File('bin/aoc_${year}_dart.dart');
+void addDayToMain(int dayNumber) {
+  File file = File('bin/aoc.dart');
   String dayString = dayNumber.toString().padLeft(2, '0');
   // Read the contents of the file
   String contents = file.readAsStringSync();
@@ -140,10 +140,10 @@ void addDayToMain(int dayNumber, int year) {
   file.writeAsStringSync(newContents);
 }
 
-String dayTemplate(int dayNumber, int year) {
+String dayTemplate(int dayNumber) {
   String dayString = dayNumber.toString().padLeft(2, '0');
   return '''
-import 'package:aoc_${year}_dart/index.dart';
+import 'package:aoc/index.dart';
 
 class Day$dayString extends GenericDay {
   final String inType;
@@ -172,11 +172,11 @@ class Day$dayString extends GenericDay {
 ''';
 }
 
-String dayTestTemplate(int dayNumber, int year, int exampleExpectation) {
+String dayTestTemplate(int dayNumber, int exampleExpectation) {
   String dayString = dayNumber.toString().padLeft(2, '0');
   return '''
 import 'package:test/test.dart';
-import 'package:aoc_${year}_dart/solutions/index.dart';
+import 'package:aoc/solutions/index.dart';
 
 void main() {
   test('Day$dayString', () async {

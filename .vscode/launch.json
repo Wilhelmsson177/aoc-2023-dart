@@ -3,9 +3,17 @@
     // Hover to view descriptions of existing attributes.
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
+    "inputs": [
+        {
+            "id": "echoPrompt",
+            "description": "Please enter the Day",
+            "default": "1",
+            "type": "promptString"
+        }
+    ],
     "configurations": [
         {
-            "name": "aoc-2023-dart-day-generator",
+            "name": "aoc-generator",
             "request": "launch",
             "type": "dart",
             "program": "bin/day_generator.dart",
@@ -14,13 +22,13 @@
             ]
         },
         {
-            "name": "aoc-2023-dart-day",
+            "name": "aoc-day",
             "request": "launch",
             "type": "dart",
             "program": "bin/aoc.dart",
             "args": [
                 "-d",
-                "0"
+                "${input:echoPrompt}"
             ]
         }
     ]

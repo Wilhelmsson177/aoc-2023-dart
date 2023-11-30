@@ -10,7 +10,8 @@ import 'package:aoc/logger.dart';
 /// Small Program to be used to generate files and boilerplate for a given day.\
 /// Call with `dart run day_generator.dart <day>`
 void main(List<String> args) async {
-  var env = DotEnv(includePlatformEnvironment: true)..load();
+  var env = DotEnv(includePlatformEnvironment: true)
+    ..load([".env", ".env.secrets"]);
   int year = int.parse(env.getOrElse("AOC_YEAR", () => "2019"));
   String session = env.getOrElse("AOC_SESSION", () => "");
   initializeLogging("debug");

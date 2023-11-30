@@ -40,7 +40,7 @@
 			"cwd": "",
 			"args": [
 				"run",
-				"aoc_2023_dart"
+				"aoc"
 			],
 			"problemMatcher": [],
 			"label": "dart: Today's solution",

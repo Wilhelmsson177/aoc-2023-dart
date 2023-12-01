@@ -17,4 +17,5 @@ The template is based on the idea of https://github.com/S-ecki/AdventOfCode-Star
 
 ### Day 01
 
+PartA was pretty simple to solve with a RegEx. For the second part I used the `matchAny` function of the `quiver` library, which allows to match against a list of patters. It was quite some typing to get all the patterns covered. I had some copy past error where I tried to parse the int from a number as a word. I forgot to change matchLast to matchFirst after copy. Let's see what tomorrow brings. Maybe I will take some time to clean up.
 

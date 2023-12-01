@@ -10,6 +10,7 @@ import 'package:dart_console/dart_console.dart';
 /// Map holding all the solution classes.
 final List<GenericDay> dayList = [
   Day00(),
+  Day01(),
   //{add_me}
 ];
 final Map<int, GenericDay> possibleDays = dayList.asMap();
@@ -128,7 +129,11 @@ class Solver {
 
   void _printResults() {
     List<List<Object>> solutions = List.empty(growable: true);
+    Duration timingPartA = Duration();
+    Duration timingPartB = Duration();
     for (var result in results.entries) {
+      timingPartA += result.value.$1.$2;
+      timingPartB += result.value.$2.$2;
       solutions.add([
         result.key,
         result.value.$1.$1,
@@ -137,6 +142,14 @@ class Solver {
         result.value.$2.$2.toString()
       ]);
     }
+    List<Object> calculatedTiming = [
+      "Overall timing",
+      "",
+      timingPartA.toString(),
+      "",
+      timingPartB.toString()
+    ];
+
     final table = Table()
       ..borderColor = ConsoleColor.blue
       ..borderStyle = BorderStyle.rounded
@@ -147,6 +160,7 @@ class Solver {
       ..insertColumn(header: 'Solution Part B', alignment: TextAlignment.right)
       ..insertColumn(header: 'Timing Part B', alignment: TextAlignment.right)
       ..insertRows(solutions)
+      ..insertRow(calculatedTiming)
       ..title = 'The results of Advent of Code $year';
 
     console.write(table);

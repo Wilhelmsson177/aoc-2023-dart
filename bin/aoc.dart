@@ -10,6 +10,7 @@ import 'package:dart_console/dart_console.dart';
 /// Map holding all the solution classes.
 final List<GenericDay> dayList = [
   Day00(),
+  Day01(),
   //{add_me}
 ];
 final Map<int, GenericDay> possibleDays = dayList.asMap();

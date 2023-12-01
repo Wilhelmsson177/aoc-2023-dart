@@ -1,6 +1,21 @@
 import 'package:aoc/index.dart';
 import 'package:quiver/pattern.dart';
 
+int getValueByString(String input) {
+  return switch (input) {
+    "one" => 1,
+    "two" => 2,
+    "three" => 3,
+    "four" => 4,
+    "five" => 5,
+    "six" => 6,
+    "seven" => 7,
+    "eight" => 8,
+    "nine" => 9,
+    _ => int.parse(input)
+  };
+}
+
 class Day01 extends GenericDay {
   final String inType;
   Day01([this.inType = 'in']) : super(1, inType);
@@ -47,30 +62,8 @@ class Day01 extends GenericDay {
           (element) => element.start, (a, b) => a.compareTo(b));
       var matchFirst = sorted.first;
       var matchLast = sorted.last;
-      int firstValue = switch (matchFirst[0]) {
-        "one" => 1,
-        "two" => 2,
-        "three" => 3,
-        "four" => 4,
-        "five" => 5,
-        "six" => 6,
-        "seven" => 7,
-        "eight" => 8,
-        "nine" => 9,
-        _ => int.parse(matchFirst[0]!)
-      };
-      int lastValue = switch (matchLast[0]) {
-        "one" => 1,
-        "two" => 2,
-        "three" => 3,
-        "four" => 4,
-        "five" => 5,
-        "six" => 6,
-        "seven" => 7,
-        "eight" => 8,
-        "nine" => 9,
-        _ => int.parse(matchLast[0]!)
-      };
+      int firstValue = getValueByString(matchFirst[0]!);
+      int lastValue = getValueByString(matchLast[0]!);
       sum += int.parse("$firstValue$lastValue");
     }
     return sum;

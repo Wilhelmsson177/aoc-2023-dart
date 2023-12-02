@@ -34,7 +34,7 @@ class Day02 extends GenericDay {
     final lines = input.getPerLine();
     List<Game> games = [];
     for (String line in lines) {
-      int id = line.split(":").first.replaceAll("Game ", "").toInt();
+      int id = line.split(":").first.trim().split(" ").last.toInt();
       List<ColorCounts> cc = [];
       for (String draw in line.split(":").last.split(";")) {
         int red = 0;

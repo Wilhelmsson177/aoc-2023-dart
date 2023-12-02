@@ -1,5 +1,4 @@
 import 'package:aoc/index.dart';
-import 'package:dart_console/dart_console.dart';
 import 'package:dartx/dartx.dart';
 
 enum Color {

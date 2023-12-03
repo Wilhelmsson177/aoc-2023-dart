@@ -25,53 +25,91 @@ class Day03 extends GenericDay {
     Set<String> allSymbols = input.$1;
     Field<String> field = input.$2;
     List<int> partNumbers = [];
-
-    field.forEach((p0, p1) {
-      if (allSymbols.contains(field.getValueAtPosition(Position(p0, p1)))) {
-        Set<int> foundPartNumbers = {};
-        for (Position n in field.neighbours(p0, p1)) {
-          if (field.getValueAtPosition(n).isInt) {
-            // Find direction of number
-            if (p0 == n.x) {
-              // Can be either direction
-              // Must not be covered Individually, because it should be found be the other two cases
-              // Only issue could be, if a single digit number
-              if (!field.getValueAt(n.x - 1, n.y).isInt &&
-                  !field.getValueAt(n.x + 1, n.y).isInt) {
-                foundPartNumbers.add(field.getValueAtPosition(n).toInt());
-              }
-            } else if (p0 > n.x) {
-              // n is last digit
-              int index = 0;
-              StringBuffer partNumber = StringBuffer();
-              do {
-                partNumber.write(field.getValueAt(n.x + index, n.y));
-                index--;
-              } while (field.isOnField(Position(n.x + index, n.y)) &&
-                  field.getValueAt(n.x + index, n.y).isInt);
-              foundPartNumbers.add(partNumber.toString().reversed.toInt());
-            } else if (p0 < n.x) {
-              // n is first digit
-              int index = 0;
-              StringBuffer partNumber = StringBuffer();
-              do {
-                partNumber.write(field.getValueAt(n.x + index, n.y));
-                index++;
-              } while (field.isOnField(Position(n.x + index, n.y)) &&
-                  field.getValueAt(n.x + index, n.y).isInt);
-              foundPartNumbers.add(partNumber.toString().toInt());
-            }
-          }
-        }
-        partNumbers.addAll(foundPartNumbers);
+    Map<(Position, Position), int> numbers = {};
+    for (int rowIndex = 0; rowIndex < field.height; rowIndex++) {
+      var row = field.getRow(rowIndex);
+      RegExp reNum = RegExp(r"\d+");
+      // row must be a real string
+      for (var match in reNum.allMatches(row.join())) {
+        Position startP = Position(match.start, rowIndex);
+        Position endP = Position(match.end - 1, rowIndex);
+        numbers.putIfAbsent((startP, endP), () => match[0]!.toInt());
       }
-    });
+    }
+
+    for (MapEntry<(Position, Position), int> possiblePartNumber
+        in numbers.entries) {
+      if (checkSymbol(field, possiblePartNumber.key.$1, allSymbols) ||
+          checkSymbol(field, possiblePartNumber.key.$2, allSymbols)) {
+        partNumbers.add(possiblePartNumber.value);
+      }
+    }
+
     return partNumbers.reduce((value, element) => value + element);
   }
 
   @override
   int solvePartB() {
-    // TODO implement
-    return 0;
+    var input = parseInput();
+    Field<String> field = input.$2;
+    List<int> partNumbers = [];
+    Map<(Position, Position), int> numbers = {};
+    for (int rowIndex = 0; rowIndex < field.height; rowIndex++) {
+      var row = field.getRow(rowIndex);
+      RegExp reNum = RegExp(r"\d+");
+      // row must be a real string
+      for (var match in reNum.allMatches(row.join())) {
+        Position startP = Position(match.start, rowIndex);
+        Position endP = Position(match.end - 1, rowIndex);
+        numbers.putIfAbsent((startP, endP), () => match[0]!.toInt());
+      }
+    }
+    Map<Position, Set<int>> gears = {};
+    for (MapEntry<(Position, Position), int> possiblePartNumber
+        in numbers.entries) {
+      if (checkSymbol(field, possiblePartNumber.key.$1, {"*"}) ||
+          checkSymbol(field, possiblePartNumber.key.$2, {"*"})) {
+        partNumbers.add(possiblePartNumber.value);
+      }
+      Position? gearStart = getGear(field, possiblePartNumber.key.$1);
+      Position? gearEnd = getGear(field, possiblePartNumber.key.$2);
+      if (gearStart != null) {
+        if (gears.containsKey(gearStart)) {
+          gears[gearStart]!.add(possiblePartNumber.value);
+        } else {
+          gears.putIfAbsent(gearStart, () => {possiblePartNumber.value});
+        }
+      }
+      if (gearEnd != null) {
+        if (gears.containsKey(gearEnd)) {
+          gears[gearEnd]!.add(possiblePartNumber.value);
+        } else {
+          gears.putIfAbsent(gearEnd, () => {possiblePartNumber.value});
+        }
+      }
+    }
+
+    int sum = 0;
+    for (MapEntry<Position, Set<int>> gear in gears.entries) {
+      if (gear.value.length == 2) {
+        sum += gear.value.first * gear.value.last;
+      }
+    }
+
+    return sum;
   }
+}
+
+Position? getGear(Field<String> field, Position pos) {
+  for (Position n in field.neighbours(pos.x, pos.y)) {
+    if (field.getValueAtPosition(n) == "*") {
+      return n;
+    }
+  }
+  return null;
+}
+
+bool checkSymbol(Field<String> field, Position pos, Set<String> allSymbols) {
+  return field.neighbours(pos.x, pos.y).any(
+      (element) => allSymbols.contains(field.getValueAt(element.x, element.y)));
 }

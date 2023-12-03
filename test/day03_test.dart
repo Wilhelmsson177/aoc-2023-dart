@@ -8,6 +8,6 @@ void main() {
     int expectation = 4361;
     var day = Day03(input);
     expect(day.solvePartA(), expectation);
-    expect(day.solvePartB(), 0);
+    expect(day.solvePartB(), 467835);
   });
 }

@@ -1,6 +1,6 @@
 # Advent of Code 2023 using Dart 3.2
 
-![](https://img.shields.io/badge/day%20📅-3-blue)![](https://img.shields.io/badge/days%20completed-3-red)![](https://img.shields.io/badge/stars%20⭐-6-yellow)
+![](https://img.shields.io/badge/day%20📅-4-blue)![](https://img.shields.io/badge/days%20completed-4-red)![](https://img.shields.io/badge/stars%20⭐-8-yellow)
 
 Initially I had in mind to go with Rust, but I does not feel like my language yet. Therefore I go with Dart again as I did 2022.
 
@@ -14,6 +14,7 @@ The template is based on the idea of https://github.com/S-ecki/AdventOfCode-Star
 | [Day 1](https://adventofcode.com/2023/day/1) | ⭐ | ⭐ |
 | [Day 2](https://adventofcode.com/2023/day/2) | ⭐ | ⭐ |
 | [Day 3](https://adventofcode.com/2023/day/3) | ⭐ | ⭐ |
+| [Day 4](https://adventofcode.com/2023/day/4) | ⭐ | ⭐ |
 <!--- advent_readme_stars table --->
 
 ## Diary

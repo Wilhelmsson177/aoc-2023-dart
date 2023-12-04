@@ -13,6 +13,6 @@ Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11""";
     int expectation = 13;
     var day = Day04(input);
     expect(day.solvePartA(), expectation);
-    expect(day.solvePartB(), 0);
+    expect(day.solvePartB(), 30);
   });
 }

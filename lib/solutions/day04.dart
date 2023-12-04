@@ -2,35 +2,30 @@ import 'package:aoc/index.dart';
 import 'package:dartx/dartx.dart';
 
 class Card {
-  late List<int> winningNumbers;
-  late List<int> ownNumbers;
+  late Iterable<int> winningNumbers;
+  late Iterable<int> ownNumbers;
 
-  // Card(this.winningNumbers, this.ownNumbers);
   Card(String input) {
     List<String> numbers = input.split(":").last.split("|");
     winningNumbers = numbers[0]
         .trim()
         .split(" ")
         .filter((element) => element.isNotBlank)
-        .map((e) => e.trim().toInt())
-        .toList();
+        .map((e) => e.trim().toInt());
     ownNumbers = numbers[1]
         .trim()
         .split(" ")
         .filter((element) => element.isNotBlank)
-        .map((e) => e.trim().toInt())
-        .toList();
+        .map((e) => e.trim().toInt());
   }
 
   int get winningPoint {
     return winningNumbers.intersect(ownNumbers).fold(0,
-        (previousValue, element) {
-      if (previousValue == 0) {
-        return 1;
-      } else {
-        return previousValue * 2;
-      }
-    });
+        (previousValue, element) => previousValue == 0 ? 1 : previousValue * 2);
+  }
+
+  int get matchingNumbers {
+    return winningNumbers.intersect(ownNumbers).length;
   }
 }
 
@@ -39,9 +34,9 @@ class Day04 extends GenericDay {
   Day04([this.inType = 'in']) : super(4, inType);
 
   @override
-  List<Card> parseInput() {
+  Iterable<Card> parseInput() {
     final lines = input.getPerLine();
-    return lines.map((e) => Card(e)).toList();
+    return lines.map((e) => Card(e));
   }
 
   @override
@@ -52,7 +47,18 @@ class Day04 extends GenericDay {
 
   @override
   int solvePartB() {
-    // TODO implement
-    return 0;
+    Iterable<Card> cards = parseInput();
+    Map<int, int> cardCounter = Map.fromIterable(
+        Iterable.generate(cards.length, (i) => i),
+        value: (element) => 1);
+    cards.toList().forEachIndexed((index, element) {
+      for (var i = 0; i < element.matchingNumbers; i++) {
+        cardCounter[index + 1 + i] =
+            cardCounter[index + 1 + i]! + cardCounter[index]!;
+      }
+    });
+
+    return cardCounter.values
+        .fold(0, (previousValue, element) => previousValue + element);
   }
 }

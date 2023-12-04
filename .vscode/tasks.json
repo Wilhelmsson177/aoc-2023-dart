@@ -49,6 +49,22 @@
 				"kind": "build",
 				"isDefault": true
 			}
+		},
+		{
+			"type": "dart",
+			"command": "dart",
+			"cwd": "",
+			"args": [
+				"run",
+				"bin/day_generator.dart"
+			],
+			"problemMatcher": [],
+			"label": "dart: Generate Today's Day",
+			"detail": "",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
 		}
 	]
 }

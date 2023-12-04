@@ -13,6 +13,7 @@ final List<GenericDay> dayList = [
   Day01(),
   Day02(),
   Day03(),
+  Day04(),
   //{add_me}
 ];
 final Map<int, GenericDay> possibleDays = dayList.asMap();

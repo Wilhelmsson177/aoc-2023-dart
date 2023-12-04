@@ -19,6 +19,7 @@ void main(List<String> args) async {
   int dayOfMonth = DateTime.now().day;
   String exampleInput = "";
   int exampleExpectation = 0;
+  bool onlyInputCreation = false;
 
   final parser = ArgParser();
 
@@ -40,6 +41,10 @@ void main(List<String> args) async {
       help: 'Add the example solution, so it will be put into the test.',
       callback: (input) => exampleExpectation = int.parse(input!));
 
+  parser.addFlag('inputOnly',
+      help: "Only download the input, but no further data.",
+      callback: (p0) => onlyInputCreation = p0);
+
   parser.addFlag(
     'help',
     abbr: 'h',
@@ -57,45 +62,48 @@ void main(List<String> args) async {
 
   talker.debug("You have input the args ${argResults.arguments}");
   // Inform user which day will be generated
-  talker.good("Day $dayOfMonth will be generated.");
-
-  // Create lib file
-  final dayFileName = 'day${dayOfMonth.toString().padLeft(2, '0')}.dart';
-  unawaited(
-    File('lib/solutions/$dayFileName').writeAsString(dayTemplate(dayOfMonth)),
-  );
-  // Create test file
-  final dayTestFileName =
-      'day${dayOfMonth.toString().padLeft(2, '0')}_test.dart';
-
-  File('test/$dayTestFileName').writeAsStringSync(
-      dayTestTemplate(dayOfMonth, exampleInput, exampleExpectation));
-
-  final exportFile = File('lib/solutions/index.dart');
-  final exports = exportFile.readAsLinesSync();
-  String content =
-      "export 'day${dayOfMonth.toString().padLeft(2, '0')}.dart';\n";
-  bool found = false;
-  // check if line already exists
-  for (final line in exports) {
-    if (line.contains('day${dayOfMonth.toString().padLeft(2, '0')}.dart')) {
-      found = true;
-      break;
-    }
-  }
-
-  // export new day in index file if not present
-  if (!found) {
-    exportFile.writeAsString(
-      content,
-      mode: FileMode.append,
-    );
-  }
-
-  addDayToMain(dayOfMonth);
+  talker.good(
+      "Day $dayOfMonth will be generated.${onlyInputCreation ? ' (Just the input data)' : ''}");
 
   // Create input file
   await _downloadInputFile(year, dayOfMonth, session);
+
+  if (!onlyInputCreation) {
+    // Create lib file
+    final dayFileName = 'day${dayOfMonth.toString().padLeft(2, '0')}.dart';
+    unawaited(
+      File('lib/solutions/$dayFileName').writeAsString(dayTemplate(dayOfMonth)),
+    );
+    // Create test file
+    final dayTestFileName =
+        'day${dayOfMonth.toString().padLeft(2, '0')}_test.dart';
+
+    File('test/$dayTestFileName').writeAsStringSync(
+        dayTestTemplate(dayOfMonth, exampleInput, exampleExpectation));
+
+    final exportFile = File('lib/solutions/index.dart');
+    final exports = exportFile.readAsLinesSync();
+    String content =
+        "export 'day${dayOfMonth.toString().padLeft(2, '0')}.dart';\n";
+    bool found = false;
+    // check if line already exists
+    for (final line in exports) {
+      if (line.contains('day${dayOfMonth.toString().padLeft(2, '0')}.dart')) {
+        found = true;
+        break;
+      }
+    }
+
+    // export new day in index file if not present
+    if (!found) {
+      exportFile.writeAsString(
+        content,
+        mode: FileMode.append,
+      );
+    }
+
+    addDayToMain(dayOfMonth);
+  }
   talker.good('All set, Good luck!');
 }
 

@@ -27,8 +27,11 @@ PartA was pretty simple to solve with a RegEx. For the second part I used the `m
 
 Today I tried out the dartx package to parse into integers and I used a lot of splitting on the specific delimiters. I also created and enum for the colors and s simple `ColorCounts` class to hold the values. The List comprehension in the end was done using `.map` on the List of `ColorCounts`. In Python it feels a bit better and the types did not allow me to have it all in one line. A special thanks goes to the `trim()` method today.
 
-
 ### Day 03
 
 Today was fun. My initial idea was to go with the Symbols and check the neighbours their, but I found it pretty hard to get the correct numbers. So I started to get the numbers first and checked the neighbours of the first and the end position of the number. I was able to reuse the `Field` in the template repository to get the neighbours.
 I also had the idea of extracting the symbols from the input instead of writing a list of all possible symbols, I was sure that I would have missed one of the symbols.
+
+### Day 04
+
+Today was straight forward. I had some trouble with spaces in my splits, but that was fixed easily. I hopefully finally remember the `fold` for getting a sum of the values of a list.

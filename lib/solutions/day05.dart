@@ -1,6 +1,7 @@
 import 'package:aoc/index.dart';
-import 'package:dartx/dartx.dart';
-import 'package:quiver/iterables.dart';
+import 'package:dartx/dartx.dart' hide IterableSorted;
+import 'package:interval_tree/interval_tree.dart';
+import 'package:talker/talker.dart';
 
 class RangeDesc {
   late int destination;
@@ -12,6 +13,25 @@ class RangeDesc {
     destination = splits[0].toInt();
     source = splits[1].toInt();
     rangeLength = splits[2].toInt();
+  }
+
+  bool sourceContains(int num) {
+    return num >= source && num <= source + rangeLength;
+  }
+}
+
+class Range {
+  late int destination;
+  late int source;
+  late int rangeLength;
+  late (int, int) boundaries;
+
+  Range(String input) {
+    var splits = input.trim().split(" ");
+    destination = splits[0].toInt();
+    source = splits[1].toInt();
+    rangeLength = splits[2].toInt();
+    boundaries = (source, source + rangeLength);
   }
 
   bool sourceContains(int num) {
@@ -48,12 +68,39 @@ class CategoryMapping {
   }
 }
 
+class Almanac {
+  List<Range> maps = [];
+  Almanac(String input) {
+    input.trim().split("\n").skip(1).forEach((element) {
+      maps.add(Range(element));
+    });
+    maps.sort((a, b) => a.boundaries.$1.compareTo(b.boundaries.$1));
+  }
+
+  int destination(int source) {
+    for (Range range in maps) {
+      if (range.sourceContains(source)) {
+        return source + (range.destination - range.source);
+      }
+    }
+    return source;
+  }
+
+  get boundaries {
+    return maps
+        .map((e) => e.boundaries)
+        .sorted((a, b) => a.$1.compareTo(b.$1))
+        .toIterable();
+  }
+}
+
 class Day05 extends GenericDay {
   final String inType;
+  TalkerLogger talker = TalkerLogger();
   Day05([this.inType = 'in']) : super(5, inType);
 
   @override
-  (Iterable<int>, CategoryMapping) parseInput() {
+  (Iterable<int>, List<Almanac>) parseInput() {
     final content = input.asString;
     Iterable<int> seeds = content
         .split("\n")
@@ -63,52 +110,50 @@ class Day05 extends GenericDay {
         .trim()
         .split(" ")
         .map((e) => e.toInt());
-    List<String> mappingStrings = content.split("\n\n");
-    CategoryMapping humidityToLocation =
-        CategoryMapping("humidity", "location", null, mappingStrings[7]);
-    CategoryMapping temperatureToHumidity = CategoryMapping(
-        "temperature", "humidity", humidityToLocation, mappingStrings[6]);
-    CategoryMapping lightToTemperatur = CategoryMapping(
-        "light", "temperatur", temperatureToHumidity, mappingStrings[5]);
-    CategoryMapping waterToLight =
-        CategoryMapping("water", "light", lightToTemperatur, mappingStrings[4]);
-    CategoryMapping fertilizerToWater =
-        CategoryMapping("fertilizer", "water", waterToLight, mappingStrings[3]);
-    CategoryMapping soilToFertilizer = CategoryMapping(
-        "soil", "fertilizer", fertilizerToWater, mappingStrings[2]);
-    CategoryMapping seedToSoil =
-        CategoryMapping("seed", "soil", soilToFertilizer, mappingStrings[1]);
-    return (seeds, seedToSoil);
+    List<Almanac> almanacs = [];
+    content.split("\n\n").skip(1).forEach((element) {
+      almanacs.add(Almanac(element));
+    });
+    return (seeds, almanacs);
   }
 
   @override
   int solvePartA() {
-    (Iterable<int>, CategoryMapping) content = parseInput();
-    int closestLocation = -1;
-    for (int seed in content.$1) {
-      if (closestLocation == -1) {
-        closestLocation = content.$2.getNext(seed)!;
-      } else {
-        closestLocation = min([closestLocation, content.$2.getNext(seed)!])!;
+    (Iterable<int>, List<Almanac>) content = parseInput();
+    List<int> locations = [];
+    Iterable<int> seeds = content.$1;
+    List<Almanac> almanacs = content.$2;
+    for (int source in seeds) {
+      int destination = source;
+      for (Almanac a in almanacs) {
+        destination = a.destination(source);
+        source = destination;
       }
+      locations.add(destination);
     }
-    return closestLocation;
+    return min(locations)!;
   }
 
   @override
   int solvePartB() {
-    (Iterable<int>, CategoryMapping) content = parseInput();
-    int closestLocation = -1;
-
-    partition(content.$1, 2).map((e) => (e[0], e[1])).forEach((element) {
-      for (int seed in element.$1.rangeTo(element.$1 + element.$2 - 1)) {
-        if (closestLocation == -1) {
-          closestLocation = content.$2.getNext(seed)!;
-        } else {
-          closestLocation = min([closestLocation, content.$2.getNext(seed)!])!;
-        }
+    (Iterable<int>, List<Almanac>) content = parseInput();
+    Iterable<int> seeds = content.$1;
+    List<Almanac> almanacs = content.$2;
+    seeds.windowed(2, step: 2).toIterable();
+    IntervalTree ranges = IntervalTree.from(seeds
+        .windowed(2, step: 2)
+        .map((e) => Interval(e.first, e.first + e.last)));
+    IntervalTree newRanges = IntervalTree();
+    for (Almanac a in almanacs) {
+      for (var boundaries in a.boundaries) {
+        ranges = ranges
+            .union(IntervalTree.from([Interval(boundaries.$1, boundaries.$2)]));
       }
-    });
-    return closestLocation;
+      talker.info(ranges);
+      newRanges = IntervalTree.from(ranges.map((Interval e) =>
+          Interval(a.destination(e.start), a.destination(e.end - 1) + 1)));
+      ranges = newRanges;
+    }
+    return newRanges.first.start;
   }
 }

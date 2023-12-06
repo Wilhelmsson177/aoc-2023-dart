@@ -3,23 +3,6 @@ import 'package:dartx/dartx.dart' hide IterableSorted;
 import 'package:interval_tree/interval_tree.dart';
 import 'package:talker/talker.dart';
 
-class RangeDesc {
-  late int destination;
-  late int source;
-  late int rangeLength;
-
-  RangeDesc(String input) {
-    var splits = input.trim().split(" ");
-    destination = splits[0].toInt();
-    source = splits[1].toInt();
-    rangeLength = splits[2].toInt();
-  }
-
-  bool sourceContains(int num) {
-    return num >= source && num <= source + rangeLength;
-  }
-}
-
 class Range {
   late int destination;
   late int source;
@@ -36,35 +19,6 @@ class Range {
 
   bool sourceContains(int num) {
     return num >= source && num <= source + rangeLength;
-  }
-}
-
-class CategoryMapping {
-  List<RangeDesc> ranges = [];
-  String from;
-  String to;
-  CategoryMapping? next;
-
-  CategoryMapping(this.from, this.to, this.next, String input) {
-    input.split("\n").forEach((element) {
-      if (!element.endsWith(":") && element.isNotEmpty) {
-        ranges.add(RangeDesc(element));
-      }
-    });
-  }
-
-  int? getNext(int input) {
-    int nextStep = _findNext(input);
-    return next != null ? next?.getNext(nextStep) : nextStep;
-  }
-
-  int _findNext(int input) {
-    for (RangeDesc range in ranges) {
-      if (range.sourceContains(input)) {
-        return input + (range.destination - range.source);
-      }
-    }
-    return input;
   }
 }
 
@@ -87,10 +41,11 @@ class Almanac {
   }
 
   get boundaries {
-    return maps
-        .map((e) => e.boundaries)
-        .sorted((a, b) => a.$1.compareTo(b.$1))
-        .toIterable();
+    return maps.map((e) => e.boundaries).toIterable();
+  }
+
+  get sources {
+    return maps.map((e) => e).toIterable();
   }
 }
 
@@ -142,16 +97,15 @@ class Day05 extends GenericDay {
     seeds.windowed(2, step: 2).toIterable();
     IntervalTree ranges = IntervalTree.from(seeds
         .windowed(2, step: 2)
-        .map((e) => Interval(e.first, e.first + e.last)));
+        .map((e) => Interval(e.first, e.first + e.last - 1)));
     IntervalTree newRanges = IntervalTree();
     for (Almanac a in almanacs) {
-      for (var boundaries in a.boundaries) {
-        ranges = ranges
-            .union(IntervalTree.from([Interval(boundaries.$1, boundaries.$2)]));
-      }
-      talker.info(ranges);
+      IntervalTree sourceTree = IntervalTree.from(
+          a.boundaries.map((element) => Interval(element.$1, element.$2)));
+      ranges = sourceTree.union(ranges).intersection(ranges);
       newRanges = IntervalTree.from(ranges.map((Interval e) =>
-          Interval(a.destination(e.start), a.destination(e.end - 1) + 1)));
+          Interval(a.destination(e.start), a.destination(e.end))));
+      talker.info((ranges, sourceTree, newRanges));
       ranges = newRanges;
     }
     return newRanges.first.start;

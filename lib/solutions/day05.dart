@@ -100,12 +100,15 @@ class Day05 extends GenericDay {
         .map((e) => Interval(e.first, e.first + e.last - 1)));
     IntervalTree newRanges = IntervalTree();
     for (Almanac a in almanacs) {
-      IntervalTree sourceTree = IntervalTree.from(
-          a.boundaries.map((element) => Interval(element.$1, element.$2)));
-      ranges = sourceTree.union(ranges).intersection(ranges);
-      newRanges = IntervalTree.from(ranges.map((Interval e) =>
-          Interval(a.destination(e.start), a.destination(e.end))));
-      talker.info((ranges, sourceTree, newRanges));
+      List<Interval> newInterval = [];
+      for (var b in a.boundaries) {
+        IntervalTree sourceTree = IntervalTree.from([Interval(b.$1, b.$2)]);
+        newInterval.addAll(ranges.intersection(sourceTree).map((Interval e) =>
+            Interval(a.destination(e.start), a.destination(e.end))));
+        ranges = ranges.difference(sourceTree);
+      }
+      IntervalTree newRanges = IntervalTree.from(newInterval);
+      talker.info((ranges, newRanges));
       ranges = newRanges;
     }
     return newRanges.first.start;

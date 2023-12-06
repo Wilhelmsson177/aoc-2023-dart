@@ -8,16 +8,16 @@ import 'package:args/args.dart';
 import 'package:dart_console/dart_console.dart';
 
 /// Map holding all the solution classes.
-final List<GenericDay> dayList = [
-  Day00(),
-  Day01(),
-  Day02(),
-  Day03(),
-  Day04(),
-  Day05(),
+final Map<int, GenericDay> possibleDays = {
+  0: Day00(),
+  1: Day01(),
+  2: Day02(),
+  3: Day03(),
+  4: Day04(),
+  5: Day05(),
+  6: Day06(),
   //{add_me}
-];
-final Map<int, GenericDay> possibleDays = dayList.asMap();
+};
 
 void main(List<String> args) {
   var env = DotEnv(includePlatformEnvironment: true)..load();

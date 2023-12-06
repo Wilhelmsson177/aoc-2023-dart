@@ -37,3 +37,11 @@ I also had the idea of extracting the symbols from the input instead of writing 
 ### Day 04
 
 Today was straight forward. I had some trouble with spaces in my splits, but that was fixed easily. I hopefully finally remember the `fold` for getting a sum of the values of a list.
+
+### Day 05
+
+This was brute-force 10 Minutes on my machine. I probably come back to this one, when there is time.
+
+### Day 06
+
+Also brute force in the first, but then I used the `equations` package and the time went from som 300 ms to about 1 ms. This was nice.

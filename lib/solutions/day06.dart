@@ -1,5 +1,6 @@
 import 'package:aoc/index.dart';
 import 'package:dartx/dartx.dart';
+import 'package:equations/equations.dart';
 
 class Day06 extends GenericDay {
   final String inType;
@@ -20,34 +21,33 @@ class Day06 extends GenericDay {
     return (times: times, distances: distances);
   }
 
-  int calculation(int input, int duration) {
-    return (duration - input) * input;
-  }
-
   @override
   int solvePartA() {
     final input = parseInput();
     Iterable<int> times = input.times;
     List<int> distances = input.distances.toList();
-    int result = 1;
+    List<int> wins = [];
     for (var (index, time) in times.indexed) {
-      int myWins = 1
-          .rangeTo(time)
-          .map((e) => calculation(e, time))
-          .count((e) => e > distances[index]);
-      result *= myWins;
+      wins.add(equation(
+          time.toDouble(), distances[index].toDouble() + 0.00000000001));
     }
-    return result;
+    return wins.fold(1, (previousValue, element) => previousValue * element);
   }
 
   @override
   int solvePartB() {
     final input = parseInput();
-    int time = input.times.join().toInt();
-    int distance = input.distances.join().toInt();
-    return 1
-        .rangeTo(time)
-        .map((e) => calculation(e, time))
-        .count((e) => e > distance);
+    double time = input.times.join().toDouble();
+    double distance = input.distances.join().toDouble() + 0.000000000001;
+    return equation(time, distance);
+  }
+
+  int equation(double time, double distance) {
+    final equation = Quadratic(
+        a: Complex.fromReal(-1),
+        b: Complex.fromReal(time),
+        c: Complex.fromReal(-distance));
+    return equation.solutions().last.real.truncate() -
+        equation.solutions().first.real.truncate();
   }
 }

@@ -8,6 +8,6 @@ Distance:  9  40  200""";
     int expectation = 288;
     var day = Day06(input);
     expect(day.solvePartA(), expectation);
-    expect(day.solvePartB(), 0);
+    expect(day.solvePartB(), 71503);
   });
 }

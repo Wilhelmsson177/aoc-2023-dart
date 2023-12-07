@@ -11,6 +11,6 @@ QQQJA 483""";
     int expectation = 6440;
     var day = Day07(input);
     expect(day.solvePartA(), expectation);
-    expect(day.solvePartB(), 0);
+    expect(day.solvePartB(), 5905);
   });
 }

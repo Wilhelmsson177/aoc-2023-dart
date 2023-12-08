@@ -20,6 +20,7 @@ dependencies:
   dart_console: ^1.2.0
   dartx: ^1.2.0
   equations: ^5.0.2
+  dart_numerics: ^0.0.6
 
 dev_dependencies:
   build_runner: ^2.4.6

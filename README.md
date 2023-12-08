@@ -51,3 +51,7 @@ Also brute force in the first, but then I used the `equations` package and the t
 ### Day 07
 
 That was some headache. My compareTo function wasn't working in the beginning for Part 2, because I did not check on the source hand, but on the hand with my replaced values.
+
+### Day 08
+
+That was a cool riddle. Part 1 was straight forward. Part 2 could not be solved simulating, but with the LCM for all cycles found for each start.

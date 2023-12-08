@@ -45,3 +45,7 @@ This was brute-force 10 Minutes on my machine. I probably come back to this one,
 ### Day 06
 
 Also brute force in the first, but then I used the `equations` package and the time went from som 300 ms to about 1 ms. This was nice.
+
+### Day 08
+
+That was a cool riddle. Part 1 was straight forward. Part 2 could not be solved simulating, but with the LCM for all cycles found for each start.

@@ -44,6 +44,7 @@ class Hand {
   final int bid;
   late final int highCard;
   late final int firstCard;
+  late final String sourceHand;
   String hand = "";
   final bool useJokers;
 
@@ -53,6 +54,7 @@ class Hand {
     } else {
       hand = input.replaceAll("J", "X");
     }
+    sourceHand = hand;
     ht = _determineHand();
   }
 
@@ -91,10 +93,7 @@ class Hand {
         mostCommonCard = secondCommonCard;
       }
       // convert all J to best card
-      hand = hand.replaceAll(
-          "J",
-          cardOrder.keys.firstWhere(
-              (element) => cardOrder[element] == mostCommonCard.value));
+      hand = hand.replaceAll("J", mostCommonCard.key);
       counts = getCountMap();
       sortedCounts = counts.entries.toList();
       sortedCounts.sort((a, b) {
@@ -133,13 +132,14 @@ class Hand {
       return value.compareTo(other.value);
     }
     if (ht == other.ht) {
-      for (var pair in zip([hand.split(""), other.hand.split("")])) {
+      for (var pair
+          in zip([sourceHand.split(""), other.sourceHand.split("")])) {
         if (pair.first == pair.last) {
           continue;
         }
-        return cardOrder[pair.first]!.compareTo(cardOrder[pair.last]!);
+        return cardOrder[pair.last]!.compareTo(cardOrder[pair.first]!);
       }
-      throw Error();
+      return 0;
     }
     throw Error();
   }
@@ -162,8 +162,10 @@ class Day07 extends GenericDay {
   @override
   int solvePartA() {
     final Iterable<Hand> input = parseInput();
-    talker.debug(
-        input.sorted((a, b) => b.compareTo(a)).map((e) => e.hand).toList());
+    talker.debug(input
+        .sorted((a, b) => b.compareTo(a))
+        .map((e) => e.sourceHand)
+        .toList());
     return input.sorted((a, b) => b.compareTo(a)).foldIndexed(0,
         (index, previous, element) => previous + ((index + 1) * element.bid));
   }
@@ -171,8 +173,12 @@ class Day07 extends GenericDay {
   @override
   int solvePartB() {
     final Iterable<Hand> input = parseInput(useJokers: true);
+    talker.debug(input
+        .sorted((a, b) => b.compareTo(a))
+        .map((e) => e.sourceHand)
+        .toList());
     talker.debug(
-        input.sorted((a, b) => b.compareTo(a)).map((e) => e.hand).toList());
+        input.sorted((a, b) => b.compareTo(a)).map((e) => e.ht).toList());
     return input.sorted((a, b) => b.compareTo(a)).foldIndexed(0,
         (index, previous, element) => previous + ((index + 1) * element.bid));
   }

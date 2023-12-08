@@ -45,3 +45,7 @@ This was brute-force 10 Minutes on my machine. I probably come back to this one,
 ### Day 06
 
 Also brute force in the first, but then I used the `equations` package and the time went from som 300 ms to about 1 ms. This was nice.
+
+### Day 07
+
+That was some headache. My compareTo function wasn't working in the beginning for Part 2, because I did not check on the source hand, but on the hand with my replaced values.

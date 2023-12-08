@@ -1,4 +1,5 @@
 import 'package:aoc/index.dart';
+import 'package:aoc/logger.dart';
 import 'package:dartx/dartx.dart' hide IterableSorted;
 
 enum HandType {
@@ -12,37 +13,22 @@ enum HandType {
   highCard
 }
 
-List<String> cardOrder = [
-  "A",
-  "K",
-  "Q",
-  "J",
-  "T",
-  "9",
-  "8",
-  "7",
-  "6",
-  "5",
-  "4",
-  "3",
-  "2"
-].reversed.toList();
-
-List<String> cardOrderWithJokers = [
-  "A",
-  "K",
-  "Q",
-  "T",
-  "9",
-  "8",
-  "7",
-  "6",
-  "5",
-  "4",
-  "3",
-  "2",
-  "J",
-].reversed.toList();
+Map<String, int> cardOrder = {
+  "A": 14,
+  "K": 13,
+  "Q": 12,
+  "X": 11,
+  "T": 10,
+  "9": 9,
+  "8": 8,
+  "7": 7,
+  "6": 6,
+  "5": 5,
+  "4": 4,
+  "3": 3,
+  "2": 2,
+  "J": 1
+};
 
 bool isSortedSequence(List<int> list) {
   for (int i = 1; i < list.length; i++) {
@@ -53,45 +39,77 @@ bool isSortedSequence(List<int> list) {
   return true;
 }
 
-Map<int, int> getCountMap(List<int> input) {
-  Map<int, int> countMap = {};
-
-  for (int item in input) {
-    countMap.putIfAbsent(item, () => 0);
-    countMap[item] = countMap[item]! + 1;
-  }
-  return countMap;
-}
-
 class Hand {
   late final HandType ht;
   final int bid;
   late final int highCard;
   late final int firstCard;
-  late final String hand;
-  late final List<int> orders;
+  String hand = "";
   final bool useJokers;
 
-  Hand(this.hand, this.bid, {this.useJokers = false}) {
+  Hand(String input, this.bid, {this.useJokers = false}) {
+    if (useJokers) {
+      hand = input;
+    } else {
+      hand = input.replaceAll("J", "X");
+    }
     ht = _determineHand();
   }
 
+  Map<String, int> getCountMap() {
+    Map<String, int> countMap = {};
+
+    for (String item in hand.split("")) {
+      countMap.putIfAbsent(item, () => 0);
+      countMap[item] = countMap[item]! + 1;
+    }
+    return countMap;
+  }
+
+  get value => ht.index;
+
   HandType _determineHand() {
-    if (useJokers) {
-      orders =
-          hand.split("").map((e) => cardOrderWithJokers.indexOf(e)).toList();
-    } else {
-      orders = hand.split("").map((e) => cardOrder.indexOf(e)).toList();
-    }
-    firstCard = orders.first;
-    Map<int, int> counts = getCountMap(orders);
-    highCard = counts.keys.sorted((a, b) => a.compareTo(b)).last;
-    if (useJokers) {
-      _applyJokers(counts);
-    }
-    if (counts.values.contains(5)) {
+    Map<String, int> counts = getCountMap();
+
+    List<MapEntry<String, int>> sortedCounts = counts.entries.toList();
+    sortedCounts.sort((a, b) {
+      if (a.value == b.value) {
+        return a.key.compareTo(b.key);
+      } else {
+        return b.value.compareTo(a.value);
+      }
+    });
+    MapEntry<String, int> mostCommonCard = sortedCounts.first;
+    if (mostCommonCard.value == 5) {
       return HandType.fiveOfAKind;
     }
+
+    if (useJokers) {
+      MapEntry<String, int> secondCommonCard = sortedCounts.second;
+      if (mostCommonCard.key == "J") {
+        // measn Joker is mst common
+        mostCommonCard = secondCommonCard;
+      }
+      // convert all J to best card
+      hand = hand.replaceAll(
+          "J",
+          cardOrder.keys.firstWhere(
+              (element) => cardOrder[element] == mostCommonCard.value));
+      counts = getCountMap();
+      sortedCounts = counts.entries.toList();
+      sortedCounts.sort((a, b) {
+        if (a.value == b.value) {
+          return a.key.compareTo(b.key);
+        } else {
+          return b.value.compareTo(a.value);
+        }
+      });
+      mostCommonCard = sortedCounts.first;
+      if (mostCommonCard.value == 5) {
+        return HandType.fiveOfAKind;
+      }
+    }
+
     if (counts.values.contains(4)) {
       return HandType.fourOfAKind;
     }
@@ -111,51 +129,19 @@ class Hand {
   }
 
   int compareTo(Hand other) {
+    if (value != other.value) {
+      return value.compareTo(other.value);
+    }
     if (ht == other.ht) {
-      for (var i = 0; i < orders.length; i++) {
-        if (orders[i] == other.orders[i]) {
+      for (var pair in zip([hand.split(""), other.hand.split("")])) {
+        if (pair.first == pair.last) {
           continue;
         }
-        return other.orders[i].compareTo(orders[i]);
+        return cardOrder[pair.first]!.compareTo(cardOrder[pair.last]!);
       }
       throw Error();
-    } else {
-      return ht.index.compareTo(other.ht.index);
     }
-  }
-
-  void _applyJokers(Map<int, int> counts) {
-    switch (counts[0]) {
-      case 4:
-        counts[cardOrder.length] = 4;
-        break;
-      case 3:
-        counts[highCard] = 4;
-        break;
-      case 2:
-        // check for the higher three or the higher pair
-        if (counts[highCard]! > 1) {
-          counts[highCard] = 4;
-        } else {
-          MapEntry<int, int> me = counts
-              .mapEntries((p0) => p0)
-              .sorted((a, b) => b.key.compareTo(a.key))
-              .firstWhere((element) => element.value > 1);
-          counts[me.key] = 4;
-        }
-        break;
-      case 1:
-        MapEntry<int, int> me = counts
-            .mapEntries((p0) => p0)
-            .sorted((a, b) => b.value.compareTo(a.value))
-            .takeWhile((value) => value.value == max(counts.values))
-            .sorted((a, b) => b.key.compareTo(a.key))
-            .first;
-        counts[me.key] = counts[me.key]! + 1;
-        break;
-      case _:
-        break;
-    }
+    throw Error();
   }
 }
 
@@ -176,6 +162,8 @@ class Day07 extends GenericDay {
   @override
   int solvePartA() {
     final Iterable<Hand> input = parseInput();
+    talker.debug(
+        input.sorted((a, b) => b.compareTo(a)).map((e) => e.hand).toList());
     return input.sorted((a, b) => b.compareTo(a)).foldIndexed(0,
         (index, previous, element) => previous + ((index + 1) * element.bid));
   }
@@ -183,6 +171,8 @@ class Day07 extends GenericDay {
   @override
   int solvePartB() {
     final Iterable<Hand> input = parseInput(useJokers: true);
+    talker.debug(
+        input.sorted((a, b) => b.compareTo(a)).map((e) => e.hand).toList());
     return input.sorted((a, b) => b.compareTo(a)).foldIndexed(0,
         (index, previous, element) => previous + ((index + 1) * element.bid));
   }

@@ -1,4 +1,7 @@
 import 'package:aoc/index.dart';
+import 'package:aoc/logger.dart';
+import 'package:dartx/dartx.dart';
+import 'package:dart_numerics/dart_numerics.dart';
 
 typedef Follower = ({String left, String right});
 
@@ -25,28 +28,44 @@ class Day08 extends GenericDay {
     String directions = input.$1;
     Map<String, Follower> map = input.$2;
     int counter = 0;
-    bool foundDestination = false;
-    String next = "AAA";
-    while (!foundDestination) {
-      String nextTurn = directions.substring(
-          counter % directions.length, counter % directions.length + 1);
 
-      next = switch (nextTurn) {
-        "R" => map[next]!.right,
-        "L" => map[next]!.left,
+    String current = "AAA";
+    while (current != "ZZZ") {
+      counter += 1;
+      current = switch (directions.substring(0, 1)) {
+        "R" => map[current]!.right,
+        "L" => map[current]!.left,
         _ => throw Error()
       };
-      counter += 1;
-      if (next == "ZZZ") {
-        foundDestination = true;
-      }
+      directions = directions.substring(1) + directions.substring(0, 1);
     }
     return counter;
   }
 
   @override
   int solvePartB() {
-    // TODO implement
-    return 0;
+    (String, Map<String, Follower>) input = parseInput();
+    String directions = input.$1;
+    Map<String, Follower> map = input.$2;
+    List<String> starts =
+        map.keys.filter((element) => element.endsWith("A")).toList();
+    talker.debug(starts);
+    List<int> cycles = [];
+    for (var current in starts) {
+      var currentSteps = directions;
+      var stepCount = 0;
+      while (!current.endsWith("Z")) {
+        stepCount++;
+        current = switch (currentSteps.substring(0, 1)) {
+          "R" => map[current]!.right,
+          "L" => map[current]!.left,
+          _ => throw Error()
+        };
+        currentSteps = currentSteps.substring(1) + currentSteps.substring(0, 1);
+      }
+      cycles.add(stepCount);
+    }
+    talker.debug(cycles);
+    return leastCommonMultipleOfMany(cycles);
   }
 }

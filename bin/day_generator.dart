@@ -133,7 +133,7 @@ void addDayToMain(int dayNumber) {
     return;
   }
   String newContents = contents.replaceAll(
-      '  //{add_me}', '  $dayNumber: $dayString(),\n  //{add_me}');
+      '  //{add_me}', '  $dayNumber: Day$dayString(),\n  //{add_me}');
 
   file.writeAsStringSync(newContents);
 }

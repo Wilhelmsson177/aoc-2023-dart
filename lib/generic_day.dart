@@ -6,7 +6,7 @@ typedef SolutionWithDuration = (int result, Duration duration);
 
 enum Part { a, b }
 
-/// Provides the [InputUtil] for given day and a [getSolutionX] method to return
+/// Provides the [InputUtil] for given day and a [getSolution] method to return
 /// the puzzle solutions for given day and the duration.
 abstract class GenericDay {
   final int day;

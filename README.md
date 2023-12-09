@@ -55,3 +55,7 @@ That was some headache. My compareTo function wasn't working in the beginning fo
 ### Day 08
 
 That was a cool riddle. Part 1 was straight forward. Part 2 could not be solved simulating, but with the LCM for all cycles found for each start.
+
+### Day 09
+
+Today was rather easy, but I had some issues with negative values in my predictions.

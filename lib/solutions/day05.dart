@@ -1,5 +1,6 @@
 import 'package:aoc/index.dart';
 import 'package:dartx/dartx.dart';
+import 'package:path/path.dart';
 
 class RangeDesc {
   late int destination;
@@ -18,13 +19,13 @@ class RangeDesc {
   }
 }
 
-class CategoryMapping {
+class Almanac {
   List<RangeDesc> ranges = [];
   String from;
   String to;
-  CategoryMapping? next;
+  Almanac? next;
 
-  CategoryMapping(this.from, this.to, this.next, String input) {
+  Almanac(this.from, this.to, this.next, String input) {
     input.split("\n").forEach((element) {
       if (!element.endsWith(":") && element.isNotEmpty) {
         ranges.add(RangeDesc(element));
@@ -45,6 +46,16 @@ class CategoryMapping {
     }
     return input;
   }
+
+  List<Tuple2<int, int>> mapIntervals(List<Tuple2<int, int>> srcInterval) {
+    List<Tuple2<int, int>> newIntervals = [];
+    for (var currRange in ranges) {
+      int srcStart = currRange.source;
+      int srcEnd = currRange.source + currRange.rangeLength;
+      int dest = currRange.destination;
+    }
+    return newIntervals;
+  }
 }
 
 class Day05 extends GenericDay {
@@ -52,7 +63,7 @@ class Day05 extends GenericDay {
   Day05([this.inType = 'in']) : super(5, inType);
 
   @override
-  (Iterable<int>, CategoryMapping) parseInput() {
+  (Iterable<int>, Almanac) parseInput() {
     final content = input.asString;
     Iterable<int> seeds = content
         .split("\n")
@@ -63,26 +74,26 @@ class Day05 extends GenericDay {
         .split(" ")
         .map((e) => e.toInt());
     List<String> mappingStrings = content.split("\n\n");
-    CategoryMapping humidityToLocation =
-        CategoryMapping("humidity", "location", null, mappingStrings[7]);
-    CategoryMapping temperatureToHumidity = CategoryMapping(
+    Almanac humidityToLocation =
+        Almanac("humidity", "location", null, mappingStrings[7]);
+    Almanac temperatureToHumidity = Almanac(
         "temperature", "humidity", humidityToLocation, mappingStrings[6]);
-    CategoryMapping lightToTemperatur = CategoryMapping(
+    Almanac lightToTemperatur = Almanac(
         "light", "temperatur", temperatureToHumidity, mappingStrings[5]);
-    CategoryMapping waterToLight =
-        CategoryMapping("water", "light", lightToTemperatur, mappingStrings[4]);
-    CategoryMapping fertilizerToWater =
-        CategoryMapping("fertilizer", "water", waterToLight, mappingStrings[3]);
-    CategoryMapping soilToFertilizer = CategoryMapping(
-        "soil", "fertilizer", fertilizerToWater, mappingStrings[2]);
-    CategoryMapping seedToSoil =
-        CategoryMapping("seed", "soil", soilToFertilizer, mappingStrings[1]);
+    Almanac waterToLight =
+        Almanac("water", "light", lightToTemperatur, mappingStrings[4]);
+    Almanac fertilizerToWater =
+        Almanac("fertilizer", "water", waterToLight, mappingStrings[3]);
+    Almanac soilToFertilizer =
+        Almanac("soil", "fertilizer", fertilizerToWater, mappingStrings[2]);
+    Almanac seedToSoil =
+        Almanac("seed", "soil", soilToFertilizer, mappingStrings[1]);
     return (seeds, seedToSoil);
   }
 
   @override
   int solvePartA() {
-    (Iterable<int>, CategoryMapping) content = parseInput();
+    (Iterable<int>, Almanac) content = parseInput();
     int closestLocation = -1;
     for (int seed in content.$1) {
       if (closestLocation == -1) {
@@ -96,7 +107,7 @@ class Day05 extends GenericDay {
 
   @override
   int solvePartB() {
-    (Iterable<int>, CategoryMapping) content = parseInput();
+    (Iterable<int>, Almanac) content = parseInput();
     int closestLocation = -1;
 
     partition(content.$1, 2).map((e) => (e[0], e[1])).forEach((element) {

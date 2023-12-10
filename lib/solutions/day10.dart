@@ -22,9 +22,11 @@ class PipeMap extends Field {
     from ??= start;
     return _connectedPipes.putIfAbsent(from, () {
       var aPipes = adjacentPipes(from!);
-      return [aPipes.north, aPipes.south, aPipes.west, aPipes.east]
+      var filteredPipes = [aPipes.north, aPipes.south, aPipes.west, aPipes.east]
           .mapNotNull((element) => element)
           .toIterable();
+      assert(filteredPipes.length == 2);
+      return filteredPipes;
     });
   }
 
@@ -37,21 +39,21 @@ class PipeMap extends Field {
     Position? east;
     Position? west;
     // check from bottom
-    north = ["|", "F", "7"]
+    south = ["|", "L", "J", "S"]
             .contains(getValueAtPosition(Position(from.x, from.y + 1)))
-        ? Position(from.x, from.y - 1)
+        ? Position(from.x, from.y + 1)
         : null;
-    south = ["|", "L", "J"]
+    north = ["|", "F", "7", "S"]
             .contains(getValueAtPosition(Position(from.x, from.y - 1)))
         ? Position(from.x, from.y - 1)
         : null;
-    east = ["-", "7", "F"]
+    east = ["-", "7", "J", "S"]
             .contains(getValueAtPosition(Position(from.x + 1, from.y)))
-        ? Position(from.x, from.y - 1)
+        ? Position(from.x + 1, from.y)
         : null;
-    west = ["-", "L", "F"]
+    west = ["-", "L", "F", "S"]
             .contains(getValueAtPosition(Position(from.x - 1, from.y)))
-        ? Position(from.x, from.y - 1)
+        ? Position(from.x - 1, from.y)
         : null;
     return (north: north, south: south, east: east, west: west);
   }
@@ -74,12 +76,14 @@ class Day10 extends GenericDay {
     bool looped = false;
     Position? next = loop.last;
     while (!looped) {
-      next = pipeMap.connectedPipes(next).firstWhere(
-            (element) => !loop.contains(element),
-            orElse: () => loop.first,
-          );
-      if (next == loop.first) {
-        looped = true;
+      var possibleNexts = pipeMap.connectedPipes(next);
+      if (loop.contains(possibleNexts.first)) {
+        if (loop.contains(possibleNexts.last)) {
+          looped = true;
+        }
+        next = possibleNexts.last;
+      } else {
+        next = possibleNexts.first;
       }
     }
 

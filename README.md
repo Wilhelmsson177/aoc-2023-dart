@@ -63,3 +63,7 @@ Today was rather easy, but I had some issues with negative values in my predicti
 ### Day 10
 
 The first part was okay, but I forgot a few things. Like "S" as a possible connected pipe. The Part 2 was solved by shoelace and pick's theory. Thank you AoC community for this hint.
+
+### Day 11
+
+Cool riddle today. It was actaully straight forward, but it was a bit of typing and I made some errors in the initial expansion. For part to I got a headeache because of `extensionFactor - 1`. But now it solves. I hope no one tried brute-forcing it.

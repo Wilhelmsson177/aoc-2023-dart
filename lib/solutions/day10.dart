@@ -38,6 +38,8 @@ class PipeMap extends Field {
     Position? south;
     Position? east;
     Position? west;
+
+    String value = getValueAtPosition(from)!;
     // check from bottom
     south = ["|", "L", "J", "S"]
             .contains(getValueAtPosition(Position(from.x, from.y + 1)))
@@ -55,6 +57,34 @@ class PipeMap extends Field {
             .contains(getValueAtPosition(Position(from.x - 1, from.y)))
         ? Position(from.x - 1, from.y)
         : null;
+    switch (value) {
+      case "-":
+        south = null;
+        north = null;
+        break;
+      case "|":
+        east = null;
+        west = null;
+        break;
+      case "J":
+        south = null;
+        east = null;
+        break;
+      case "7":
+        north = null;
+        east = null;
+        break;
+      case "F":
+        north = null;
+        west = null;
+        break;
+      case "L":
+        west = null;
+        south = null;
+        break;
+      default:
+        break;
+    }
     return (north: north, south: south, east: east, west: west);
   }
 }
@@ -73,17 +103,15 @@ class Day10 extends GenericDay {
   int solvePartA() {
     final pipeMap = parseInput();
     List<Position> loop = [pipeMap.start, pipeMap.connectedPipes().first];
-    bool looped = false;
-    Position? next = loop.last;
-    while (!looped) {
-      var possibleNexts = pipeMap.connectedPipes(next);
+    while (pipeMap.getValueAtPosition(loop.last) != "S") {
+      var possibleNexts = pipeMap.connectedPipes(loop.last);
       if (loop.contains(possibleNexts.first)) {
         if (loop.contains(possibleNexts.last)) {
-          looped = true;
+          break;
         }
-        next = possibleNexts.last;
+        loop.add(possibleNexts.last);
       } else {
-        next = possibleNexts.first;
+        loop.add(possibleNexts.first);
       }
     }
 

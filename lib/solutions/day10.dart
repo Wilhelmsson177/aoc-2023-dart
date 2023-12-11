@@ -133,14 +133,16 @@ class Day10 extends GenericDay {
         loop.add(possibleNexts.first);
       }
     }
-    loop.add(loop.first);
-    return (calculatePolygonArea(loop)).floor();
+    var area = calculatePolygonArea(loop);
+    // i = A - b/2 - h + 1
+    // h is 0 because no holes expected
+    return area.abs() - (loop.length / 2).floor() + 1;
   }
 }
 
-double calculatePolygonArea(List<Position> points) {
+int calculatePolygonArea(List<Position> points) {
   // Calculate the shoelace sum
-  double area = 0.0;
+  int area = 0;
   for (int i = 0; i < points.length; i++) {
     int j = (i + 1) % points.length;
     int xi = points[i].x, yi = points[i].y;
@@ -150,5 +152,5 @@ double calculatePolygonArea(List<Position> points) {
   }
 
   // Normalize the area by dividing by two
-  return area / 2.0;
+  return (area / 2).floor();
 }

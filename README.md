@@ -59,3 +59,7 @@ That was a cool riddle. Part 1 was straight forward. Part 2 could not be solved 
 ### Day 09
 
 Today was rather easy, but I had some issues with negative values in my predictions.
+
+### Day 10
+
+The first part was okay, but I forgot a few things. Like "S" as a possible connected pipe. The Part 2 was solved by shoelace and pick's theory. Thank you AoC community for this hint.

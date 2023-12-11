@@ -120,7 +120,35 @@ class Day10 extends GenericDay {
 
   @override
   int solvePartB() {
-    // TODO implement
-    return 0;
+    final pipeMap = parseInput();
+    List<Position> loop = [pipeMap.start, pipeMap.connectedPipes().first];
+    while (pipeMap.getValueAtPosition(loop.last) != "S") {
+      var possibleNexts = pipeMap.connectedPipes(loop.last);
+      if (loop.contains(possibleNexts.first)) {
+        if (loop.contains(possibleNexts.last)) {
+          break;
+        }
+        loop.add(possibleNexts.last);
+      } else {
+        loop.add(possibleNexts.first);
+      }
+    }
+    loop.add(loop.first);
+    return (calculatePolygonArea(loop)).floor();
   }
+}
+
+double calculatePolygonArea(List<Position> points) {
+  // Calculate the shoelace sum
+  double area = 0.0;
+  for (int i = 0; i < points.length; i++) {
+    int j = (i + 1) % points.length;
+    int xi = points[i].x, yi = points[i].y;
+    int xj = points[j].x, yj = points[j].y;
+    int crossProduct = (xi * yj) - (xj * yi);
+    area += crossProduct;
+  }
+
+  // Normalize the area by dividing by two
+  return area / 2.0;
 }

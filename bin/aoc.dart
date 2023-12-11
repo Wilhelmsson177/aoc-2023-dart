@@ -19,6 +19,7 @@ final Map<int, GenericDay> possibleDays = {
   7: Day07(),
   8: Day08(),
   9: Day09(),
+  11: Day11(),
   10: Day10(),
   //{add_me}
 };

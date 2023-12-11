@@ -11,9 +11,10 @@ class Field<T> {
         assert(field[0].isNotEmpty),
         // creates a deep copy by value from given field to prevent unwarranted overrides
         field = List<List<T>>.generate(
-          field.length,
-          (y) => List<T>.generate(field[0].length, (x) => field[y][x]),
-        ),
+            field.length,
+            (y) => List<T>.generate(field[0].length, (x) => field[y][x],
+                growable: true),
+            growable: true),
         height = field.length,
         width = field[0].length;
 

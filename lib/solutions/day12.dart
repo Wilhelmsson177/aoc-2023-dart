@@ -1,16 +1,9 @@
 import 'package:aoc/index.dart';
 import 'package:aoc/logger.dart';
-import 'package:dartx/dartx.dart';
+import 'package:dartx/dartx.dart' hide IterableMapIndexed;
+import "package:trotter/trotter.dart";
 
-List<List<int>> combinations(int n) {
-  if (n == 0) {
-    return [[]];
-  }
-
-  List<List<int>> combinations = [];
-  // use https://pub.dev/packages/trotter
-  return combinations;
-}
+final bagOfItems = characters(".#");
 
 class ConditionalSpring {
   late final String unconditionalSprings;
@@ -24,13 +17,21 @@ class ConditionalSpring {
 
   int getArrangements() {
     RegExp toCheck = RegExp("#+");
+    RegExp questionMarks = RegExp(r"\?");
+    final permutations = Amalgams(
+        questionMarks.allMatches(unconditionalSprings).length, bagOfItems);
     int sum = 0;
-    for (var (index, match)
-        in toCheck.allMatches(unconditionalSprings).indexed) {
-      if (match[0]!.length == expectation[index]) {
+    for (var permutation in permutations()) {
+      final newTry = unconditionalSprings.replaceAllMapped(
+          questionMarks, (match) => permutation.removeAt(0));
+      var matches = toCheck.allMatches(newTry);
+      if (matches.length == expectation.length &&
+          matches.mapIndexed((index, element) => (index, element)).all(
+              (element) => element.$2[0]!.length == expectation[element.$1])) {
         sum++;
       }
     }
+
     talker.verbose(
         "For line $unconditionalSprings I have found $sum correct solution.");
     return sum;

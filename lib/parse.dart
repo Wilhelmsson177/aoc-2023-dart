@@ -8,4 +8,11 @@ class ParseUtil {
   static int binaryToDecimal(String binary) {
     return int.parse(binary, radix: 2);
   }
+
+  static List<List<String>> blockToFieldLike(String block) {
+    return block
+        .split(RegExp(r'\n'))
+        .map((element) => element.split(""))
+        .toList();
+  }
 }

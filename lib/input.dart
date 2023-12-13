@@ -50,6 +50,11 @@ class InputUtil {
     return _inputAsString.split(RegExp(r'\s\n'));
   }
 
+  /// Splits the input String by 2 `newline` as a block.
+  List<String> getPerBlock() {
+    return _inputAsString.split(RegExp(r'\n{2}'));
+  }
+
   /// Splits the input String by given pattern.
   List<String> getBy(String pattern) {
     return _inputAsString.split(pattern);

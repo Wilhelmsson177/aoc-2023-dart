@@ -1,74 +1,43 @@
 import 'package:aoc/index.dart';
 import 'package:aoc/logger.dart';
+import 'package:dartx/dartx.dart';
 
 class Reflector extends Field {
   Reflector(super.field);
   int findReflections() {
-    // find initial vertical reflection
-    int initialVerticalReflection = -1;
-    int verticalCount = 1;
-    for (var i = 0; i < width - 1; i++) {
-      var first = getColumn(i).join("");
-      var second = getColumn(i + 1).join("");
-      if (first == second) {
-        initialVerticalReflection = i;
-        break;
-      }
-    }
-    talker.verbose("Initial vertical reflection: $initialVerticalReflection");
-    // find following reflections
-    if (initialVerticalReflection > 0) {
-      // possible width
-      int possibleWidth = min(
-          [initialVerticalReflection, width - initialVerticalReflection - 1])!;
-      for (var i = 0; i < possibleWidth; i++) {
-        var first = getColumn(initialVerticalReflection - i).join("");
-        var second = getColumn(initialVerticalReflection + 1 + i).join("");
-        if (first == second) {
-          verticalCount++;
-        } else {
-          break;
-        }
-      }
-      talker.verbose("Total vertical reflections: $verticalCount");
-      if (verticalCount > possibleWidth) {
-        return initialVerticalReflection + 1;
+    // find vertical reflection
+    for (var i = 1; i < width; i++) {
+      var first = getColumn(i - 1).join("");
+      var second = getColumn(i).join("");
+      if (first == second &&
+          range(0, i)
+              .map((e) => getColumn(e as int).join(""))
+              .reversed
+              .zip(range(i, width).map((e) => getColumn(e as int).join("")),
+                  (a, b) => (a, b))
+              .all((element) => element.$1 == element.$2)) {
+        talker.verbose("Vertical: $i");
+        return i;
       }
     }
 
-    // find initial horizontal reflection
-    int initialHorizontalReflection = -1;
-    int horizontalCount = 1;
-    for (var i = 0; i < height - 1; i++) {
-      var first = getRow(i).join("");
-      var second = getRow(i + 1).join("");
-      if (first == second) {
-        initialHorizontalReflection = i;
-        break;
+    // find horizontal reflection
+    for (var i = 1; i < height; i++) {
+      var first = getRow(i - 1).join("");
+      var second = getRow(i).join("");
+      if (first == second &&
+          range(0, i)
+              .map((e) => getRow(e as int).join(""))
+              .reversed
+              .zip(range(i, height).map((e) => getRow(e as int).join("")),
+                  (a, b) => (a, b))
+              .all((element) => element.$1 == element.$2)) {
+        talker.verbose("Horizontal: $i");
+        return i * 100;
       }
     }
-    talker
-        .verbose("Initial horizontal reflection: $initialHorizontalReflection");
-    // find following reflections
-    if (initialHorizontalReflection > 0) {
-      // possible width
-      int possibleHeight = min([
-        initialHorizontalReflection,
-        height - initialHorizontalReflection - 1
-      ])!;
-      for (var i = 0; i < possibleHeight; i++) {
-        var first = getRow(initialHorizontalReflection - i).join("");
-        var second = getRow(initialHorizontalReflection + 1 + i).join("");
-        if (first == second) {
-          horizontalCount++;
-        } else {
-          break;
-        }
-      }
-      talker.verbose("Total horizontal reflections: $horizontalCount");
-    }
-
-    return 100 * (initialHorizontalReflection + 1);
+    talker.warning(toString());
+    return 0;
   }
 }
 

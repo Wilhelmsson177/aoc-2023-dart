@@ -79,9 +79,7 @@ class Day13 extends GenericDay {
   @override
   Iterable<Reflector> parseInput() {
     final blocks = input.getPerBlock();
-    return blocks
-        .takeWhile((value) => value.isNotEmpty)
-        .map((e) => Reflector(ParseUtil.blockToFieldLike(e)));
+    return blocks.map((e) => Reflector(ParseUtil.blockToFieldLike(e.trim())));
   }
 
   @override

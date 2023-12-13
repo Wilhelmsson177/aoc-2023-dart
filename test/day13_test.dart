@@ -19,7 +19,8 @@ void main() {
 #####.##.
 #####.##.
 ..##..###
-#....#..#""";
+#....#..#
+""";
     int expectation = 405;
     var day = Day13(input);
     expect(day.solvePartA(), expectation);

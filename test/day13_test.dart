@@ -5,7 +5,8 @@ import 'package:aoc/solutions/index.dart';
 void main() {
   initializeLogging("verbose");
   test('Day13', () async {
-    String input = """#.##..##.
+    String input =
+        """#.##..##.
 ..#.##.#.
 ##......#
 ##......#
@@ -24,6 +25,28 @@ void main() {
     int expectation = 405;
     var day = Day13(input);
     expect(day.solvePartA(), expectation);
-    expect(day.solvePartB(), 0);
+  });
+
+  test('Day13 - Part B', () async {
+    String input =
+        """#.##..##.
+..#.##.#.
+##......#
+##......#
+..#.##.#.
+..##..##.
+#.#.##.#.
+
+#...##..#
+#....#..#
+..##..###
+#####.##.
+#####.##.
+..##..###
+#....#..#
+""";
+    int expectation = 400;
+    var day = Day13(input);
+    expect(day.solvePartB(), expectation);
   });
 }

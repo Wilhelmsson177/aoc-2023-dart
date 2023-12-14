@@ -174,16 +174,24 @@ String dayTestTemplate(
     int dayNumber, String exampleInput, int exampleExpectation) {
   String dayString = dayNumber.toString().padLeft(2, '0');
   return '''
+import 'package:aoc/logger.dart';
 import 'package:test/test.dart';
 import 'package:aoc/solutions/index.dart';
 
 void main() {
-  test('Day$dayString', () async {
-    String input = "$exampleInput";
+  initializeLogging("verbose");
+  test('Day$dayString - Part A', () async {
+    String input = """$exampleInput""";
     int expectation = $exampleExpectation;
     var day = Day$dayString(input);
     expect(day.solvePartA(), expectation);
-    expect(day.solvePartB(), 0);
+  });
+
+  test('Day$dayString - Part B', () async {
+    String input = """$exampleInput""";
+    int expectation = 0;
+    var day = Day$dayString(input);
+    expect(day.solvePartB(), expectation);
   });
 }
 ''';

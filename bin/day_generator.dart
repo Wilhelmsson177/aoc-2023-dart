@@ -176,8 +176,10 @@ String dayTestTemplate(
   return '''
 import 'package:test/test.dart';
 import 'package:aoc/solutions/index.dart';
+import 'package:aoc/solutions/index.dart';
 
 void main() {
+  initializeLogging("verbose");
   test('Day$dayString', () async {
     String input = "$exampleInput";
     int expectation = $exampleExpectation;

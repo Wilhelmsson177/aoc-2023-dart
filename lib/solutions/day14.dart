@@ -22,6 +22,18 @@ class Dish extends Field<String> {
     return weight;
   }
 
+  int get currentWeight {
+    int weight = 0;
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
+        if (getValueAt(x, y) == "O") {
+          weight += height - y;
+        }
+      }
+    }
+    return weight;
+  }
+
   void rollNorth() {}
 }
 

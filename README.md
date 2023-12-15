@@ -70,3 +70,7 @@ The first part was okay, but I forgot a few things. Like "S" as a possible conne
 ### Day 11
 
 Cool riddle today. It was actaully straight forward, but it was a bit of typing and I made some errors in the initial expansion. For part to I got a headeache because of `extensionFactor - 1`. But now it solves. I hope no one tried brute-forcing it.
+
+### Day 15
+
+THis was easy doing today. You just need to read carefully. I forgot to read the fact, that the relevant box is just on the label and not the entire instruction. Also the 0 index based list calucaltion for the focal power was missing a `+1`, multiplication by 0 does not bring up high values :-D. 

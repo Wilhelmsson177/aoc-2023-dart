@@ -1,5 +1,4 @@
 import 'package:aoc/index.dart';
-import 'package:aoc/logger.dart';
 
 enum Direction { west, east, south, north }
 
@@ -24,11 +23,15 @@ class LavaFloor extends Field<String> {
     return result.toString();
   }
 
+  void reset() {
+    energized.clear();
+  }
+
   Set<Position> get energizedTiles =>
       Set.from(energized.map((e) => e.position));
 
   void beamUp(DirectedPosition start) {
-    talker.info(start);
+    // talker.info(start);
     if (!energized.contains(start) && isOnField(start.position)) {
       DirectedPosition next = start;
       bool finished = false;
@@ -150,7 +153,7 @@ class LavaFloor extends Field<String> {
         }
         finished |= !isOnField(next.position);
         finished |= energized.contains(next);
-        talker.verbose(toString());
+        // talker.verbose(toString());
       } while (!finished);
     }
   }
@@ -175,7 +178,28 @@ class Day16 extends GenericDay {
 
   @override
   int solvePartB() {
-    // TODO implement
-    return 0;
+    List<int> energizedTiles = [];
+    final lavaFloor = parseInput();
+    for (int x in [0, lavaFloor.width]) {
+      for (var y = 0; y < lavaFloor.height; y++) {
+        lavaFloor.reset();
+        lavaFloor.beamUp((
+          from: x > 0 ? Direction.east : Direction.west,
+          position: Position(x, y)
+        ));
+        energizedTiles.add(lavaFloor.energizedTiles.length);
+      }
+    }
+    for (int y in [0, lavaFloor.height]) {
+      for (var x = 0; x < lavaFloor.width; x++) {
+        lavaFloor.reset();
+        lavaFloor.beamUp((
+          from: y > 0 ? Direction.south : Direction.north,
+          position: Position(x, y)
+        ));
+        energizedTiles.add(lavaFloor.energizedTiles.length);
+      }
+    }
+    return max(energizedTiles)!;
   }
 }

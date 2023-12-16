@@ -21,8 +21,17 @@ void main() {
   });
 
   test('Day16 - Part B', () async {
-    String input = """0""";
-    int expectation = 0;
+    String input = r""".|...\....
+|.-.\.....
+.....|-...
+........|.
+..........
+.........\
+..../.\\..
+.-.-/..|..
+.|....-|.\
+..//.|....""";
+    int expectation = 51;
     var day = Day16(input);
     expect(day.solvePartB(), expectation);
   });

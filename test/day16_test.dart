@@ -5,8 +5,17 @@ import 'package:aoc/solutions/index.dart';
 void main() {
   initializeLogging("verbose");
   test('Day16 - Part A', () async {
-    String input = """0""";
-    int expectation = 0;
+    String input = r""".|...\....
+|.-.\.....
+.....|-...
+........|.
+..........
+.........\
+..../.\\..
+.-.-/..|..
+.|....-|.\
+..//.|....""";
+    int expectation = 46;
     var day = Day16(input);
     expect(day.solvePartA(), expectation);
   });

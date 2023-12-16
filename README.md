@@ -77,4 +77,9 @@ Cool riddle today. It was actaully straight forward, but it was a bit of typing 
 
 ### Day 15
 
-THis was easy doing today. You just need to read carefully. I forgot to read the fact, that the relevant box is just on the label and not the entire instruction. Also the 0 index based list calucaltion for the focal power was missing a `+1`, multiplication by 0 does not bring up high values :-D. 
+This was easy doing today. You just need to read carefully. I forgot to read the fact, that the relevant box is just on the label and not the entire instruction. Also the 0 index based list calucaltion for the focal power was missing a `+1`, multiplication by 0 does not bring up high values :-D. 
+
+
+### Day 16
+
+Nice implementation with enums and a Lavamap. It was incredible slow in the beginning because of the time consuming logging, which I had enabled for debugging. Even tough the log level was higher it calculated the string for the output before not even loogging it. It took about 22 minutes to run, after I removed it it was just 28 ms. I thought I made a huge mistake. In the end it was nice.

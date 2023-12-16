@@ -31,7 +31,6 @@ class LavaFloor extends Field<String> {
       Set.from(energized.map((e) => e.position));
 
   void beamUp(DirectedPosition start) {
-    // talker.info(start);
     if (!energized.contains(start) && isOnField(start.position)) {
       DirectedPosition next = start;
       bool finished = false;
@@ -153,7 +152,6 @@ class LavaFloor extends Field<String> {
         }
         finished |= !isOnField(next.position);
         finished |= energized.contains(next);
-        // talker.verbose(toString());
       } while (!finished);
     }
   }

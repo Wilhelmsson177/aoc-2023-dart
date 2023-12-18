@@ -1,6 +1,5 @@
 import 'package:aoc/index.dart';
 import 'package:aoc/general.dart';
-import 'package:aoc/logger.dart';
 import 'package:dartx/dartx.dart';
 
 class DigInstruction {
@@ -8,16 +7,32 @@ class DigInstruction {
   late final int stepSize;
   late final String color;
 
-  DigInstruction(String input) {
-    direction = switch (input.split(" ").first) {
-      "R" => Direction.east,
-      "L" => Direction.west,
-      "D" => Direction.south,
-      "U" => Direction.north,
-      String() => throw Error(),
-    };
-    stepSize = input.split(" ").second.toInt();
-    color = input.split(" ").last.removeSurrounding(prefix: "(", suffix: ")");
+  DigInstruction(String input, bool conversion) {
+    if (!conversion) {
+      direction = switch (input.split(" ").first) {
+        "R" => Direction.east,
+        "L" => Direction.west,
+        "D" => Direction.south,
+        "U" => Direction.north,
+        String() => throw Error(),
+      };
+      stepSize = input.split(" ").second.toInt();
+    } else {
+      stepSize = int.parse(
+          "0x${input.split(" ").last.removeSurrounding(prefix: "(", suffix: ")").substring(1, 6)}");
+      direction = switch (input
+          .split(" ")
+          .last
+          .removeSurrounding(prefix: "(", suffix: ")")
+          .substring(6)) {
+        "0" => Direction.east,
+        "1" => Direction.south,
+        "2" => Direction.west,
+        "3" => Direction.north,
+        _ => throw Error()
+      };
+      color = input.split(" ").last.removeSurrounding(prefix: "(", suffix: ")");
+    }
   }
 }
 
@@ -26,20 +41,20 @@ class Day18 extends GenericDay {
   Day18([this.inType = 'in']) : super(18, inType);
 
   @override
-  Iterable<DigInstruction> parseInput() {
+  Iterable<DigInstruction> parseInput([bool conversion = false]) {
     final lines = input.getPerLine();
-    return lines.map((e) => DigInstruction(e));
+    return lines.map((e) => DigInstruction(e, conversion));
   }
 
   @override
   int solvePartA() {
     final digInstructions = parseInput();
-    List<Position> positions = [];
-    positions.add(Position(0, 0));
+    List<Position> polygon = [];
+    polygon.add(Position(0, 0));
     for (var element in digInstructions) {
-      Position lastPosition = positions.last;
+      Position lastPosition = polygon.last;
       for (var i = 1; i <= element.stepSize; i++) {
-        positions.add(switch (element.direction) {
+        polygon.add(switch (element.direction) {
           Direction.south => Position(lastPosition.x, lastPosition.y + i),
           Direction.north => Position(lastPosition.x, lastPosition.y - i),
           Direction.east => Position(lastPosition.x + i, lastPosition.y),
@@ -47,40 +62,37 @@ class Day18 extends GenericDay {
         });
       }
     }
-    int minY = min(positions.map((e) => e.y).toList())!;
-    int minX = min(positions.map((e) => e.x).toList())!;
+    assert(polygon.first == polygon.last);
+    polygon.removeLast();
 
-    assert(positions.first == positions.last);
-    positions.removeLast();
-    positions = positions
-        .map((e) => Position(e.x + minX.abs(), e.y + minY.abs()))
-        .toList();
-    int maxY = max(positions.map((e) => e.y).toList())!;
-    int maxX = max(positions.map((e) => e.x).toList())!;
-    List<List<String>> rawField = [];
-    for (var y = 0; y <= maxY; y++) {
-      List<String> rawLine = [];
-      List<Position> realBoarder = [];
-      for (var x = 0; x <= maxX; x++) {
-        bool isRealBoarder = positions.contains(Position(x, y));
-        if (isRealBoarder) {
-          realBoarder.add(Position(x, y));
-          // remove first, if consecutive
-          realBoarder.removeWhere((element) => element.x == x - 1);
-        }
-
-        rawLine.add(isRealBoarder || (realBoarder.length % 2 == 1) ? "#" : ".");
-      }
-      rawField.add(rawLine);
-    }
-    Field field = Field(rawField);
-    talker.verbose(field.toString());
-    return field.count("#");
+    var area = calculatePolygonArea(polygon) + polygon.length;
+    // i = A - b/2 - h + 1
+    // h is 0 because no holes expected
+    return area.abs() - (polygon.length / 2).floor() + 1;
   }
 
   @override
   int solvePartB() {
-    // TODO implement
-    return 0;
+    final digInstructions = parseInput(true);
+    List<Position> polygon = [];
+    polygon.add(Position(0, 0));
+    for (var element in digInstructions) {
+      Position lastPosition = polygon.last;
+      for (var i = 1; i <= element.stepSize; i++) {
+        polygon.add(switch (element.direction) {
+          Direction.south => Position(lastPosition.x, lastPosition.y + i),
+          Direction.north => Position(lastPosition.x, lastPosition.y - i),
+          Direction.east => Position(lastPosition.x + i, lastPosition.y),
+          Direction.west => Position(lastPosition.x - i, lastPosition.y),
+        });
+      }
+    }
+    assert(polygon.first == polygon.last);
+    polygon.removeLast();
+
+    var area = calculatePolygonArea(polygon) + polygon.length;
+    // i = A - b/2 - h + 1
+    // h is 0 because no holes expected
+    return area.abs() - (polygon.length / 2).floor() + 1;
   }
 }

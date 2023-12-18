@@ -2,10 +2,7 @@ import 'package:aoc/logger.dart';
 import 'package:test/test.dart';
 import 'package:aoc/solutions/index.dart';
 
-void main() {
-  initializeLogging("verbose");
-  test('Day18 - Part A', () async {
-    String input = """R 6 (#70c710)
+String example = """R 6 (#70c710)
 D 5 (#0dc571)
 L 2 (#5713f0)
 D 2 (#d2c081)
@@ -19,15 +16,17 @@ R 2 (#7807d2)
 U 3 (#a77fa3)
 L 2 (#015232)
 U 2 (#7a21e3)""";
+void main() {
+  initializeLogging("verbose");
+  test('Day18 - Part A', () async {
     int expectation = 62;
-    var day = Day18(input);
+    var day = Day18(example);
     expect(day.solvePartA(), expectation);
   });
 
   test('Day18 - Part B', () async {
-    String input = """0""";
-    int expectation = 0;
-    var day = Day18(input);
+    var day = Day18(example);
+    int expectation = 952408144115;
     expect(day.solvePartB(), expectation);
   });
 }

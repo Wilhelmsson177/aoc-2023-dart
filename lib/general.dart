@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:aoc/field.dart';
 
 enum Direction { west, east, south, north }
@@ -15,4 +17,20 @@ int calculatePolygonArea(List<Position> points) {
 
   // Normalize the area by dividing by two
   return (area / 2).floor();
+}
+
+void writeStringToFile(String filePath, String text) async {
+  try {
+    // Create a file object
+    File file = File(filePath);
+
+    // Open the file for writing
+    await file.open(mode: FileMode.write);
+
+    // Write the string to the file
+    await file.writeAsString(text);
+    print('String written to the file successfully');
+  } on Exception catch (e) {
+    print('Error writing to file: ${e.toString()}');
+  }
 }

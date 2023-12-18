@@ -84,3 +84,12 @@ This was easy doing today. You just need to read carefully. I forgot to read the
 ### Day 16
 
 Nice implementation with enums and a Lavamap. It was incredible slow in the beginning because of the time consuming logging, which I had enabled for debugging. Even tough the log level was higher it calculated the string for the output before not even loogging it. It took about 22 minutes to run, after I removed it it was just 28 ms. I thought I made a huge mistake. In the end it was nice.
+
+
+### Day 17
+
+Not yet done. No time, yet
+
+### Day 18
+
+On the bicycle ride home from the christmas market it cam to my mind, that the same problem was already solved on Day 10. Shoelace + the border Points combined with pick's theorem solved it. It is not fast. 18 seconds on Part B. But it is correct. I already have some optimization in mind. Let's see if I can find the time.

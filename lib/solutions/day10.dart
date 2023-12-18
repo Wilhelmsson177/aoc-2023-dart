@@ -1,3 +1,4 @@
+import 'package:aoc/general.dart';
 import 'package:aoc/index.dart';
 import 'package:dartx/dartx.dart';
 
@@ -138,19 +139,4 @@ class Day10 extends GenericDay {
     // h is 0 because no holes expected
     return area.abs() - (loop.length / 2).floor() + 1;
   }
-}
-
-int calculatePolygonArea(List<Position> points) {
-  // Calculate the shoelace sum
-  int area = 0;
-  for (int i = 0; i < points.length; i++) {
-    int j = (i + 1) % points.length;
-    int xi = points[i].x, yi = points[i].y;
-    int xj = points[j].x, yj = points[j].y;
-    int crossProduct = (xi * yj) - (xj * yi);
-    area += crossProduct;
-  }
-
-  // Normalize the area by dividing by two
-  return (area / 2).floor();
 }

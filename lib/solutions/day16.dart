@@ -1,6 +1,5 @@
 import 'package:aoc/index.dart';
-
-enum Direction { west, east, south, north }
+import 'package:aoc/general.dart';
 
 typedef DirectedPosition = ({Direction from, Position position});
 

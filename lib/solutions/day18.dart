@@ -5,7 +5,6 @@ import 'package:dartx/dartx.dart';
 class DigInstruction {
   late final Direction direction;
   late final int stepSize;
-  late final String color;
 
   DigInstruction(String input, bool conversion) {
     if (!conversion) {
@@ -31,7 +30,6 @@ class DigInstruction {
         "3" => Direction.north,
         _ => throw Error()
       };
-      color = input.split(" ").last.removeSurrounding(prefix: "(", suffix: ")");
     }
   }
 }
@@ -49,50 +47,39 @@ class Day18 extends GenericDay {
   @override
   int solvePartA() {
     final digInstructions = parseInput();
+    return lagoonSize(digInstructions);
+  }
+
+  int lagoonSize(Iterable<DigInstruction> digInstructions) {
     List<Position> polygon = [];
     polygon.add(Position(0, 0));
+    int borderLength = 0;
     for (var element in digInstructions) {
       Position lastPosition = polygon.last;
-      for (var i = 1; i <= element.stepSize; i++) {
-        polygon.add(switch (element.direction) {
-          Direction.south => Position(lastPosition.x, lastPosition.y + i),
-          Direction.north => Position(lastPosition.x, lastPosition.y - i),
-          Direction.east => Position(lastPosition.x + i, lastPosition.y),
-          Direction.west => Position(lastPosition.x - i, lastPosition.y),
-        });
-      }
+      polygon.add(switch (element.direction) {
+        Direction.south =>
+          Position(lastPosition.x, lastPosition.y + element.stepSize),
+        Direction.north =>
+          Position(lastPosition.x, lastPosition.y - element.stepSize),
+        Direction.east =>
+          Position(lastPosition.x + element.stepSize, lastPosition.y),
+        Direction.west =>
+          Position(lastPosition.x - element.stepSize, lastPosition.y),
+      });
+      borderLength += element.stepSize;
     }
     assert(polygon.first == polygon.last);
     polygon.removeLast();
 
-    var area = calculatePolygonArea(polygon) + polygon.length;
+    var area = calculatePolygonArea(polygon) + borderLength;
     // i = A - b/2 - h + 1
     // h is 0 because no holes expected
-    return area.abs() - (polygon.length / 2).floor() + 1;
+    return area.abs() - (borderLength / 2).floor() + 1;
   }
 
   @override
   int solvePartB() {
     final digInstructions = parseInput(true);
-    List<Position> polygon = [];
-    polygon.add(Position(0, 0));
-    for (var element in digInstructions) {
-      Position lastPosition = polygon.last;
-      for (var i = 1; i <= element.stepSize; i++) {
-        polygon.add(switch (element.direction) {
-          Direction.south => Position(lastPosition.x, lastPosition.y + i),
-          Direction.north => Position(lastPosition.x, lastPosition.y - i),
-          Direction.east => Position(lastPosition.x + i, lastPosition.y),
-          Direction.west => Position(lastPosition.x - i, lastPosition.y),
-        });
-      }
-    }
-    assert(polygon.first == polygon.last);
-    polygon.removeLast();
-
-    var area = calculatePolygonArea(polygon) + polygon.length;
-    // i = A - b/2 - h + 1
-    // h is 0 because no holes expected
-    return area.abs() - (polygon.length / 2).floor() + 1;
+    return lagoonSize(digInstructions);
   }
 }

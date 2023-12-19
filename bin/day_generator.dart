@@ -178,19 +178,20 @@ import 'package:aoc/logger.dart';
 import 'package:test/test.dart';
 import 'package:aoc/solutions/index.dart';
 
+String example = """$exampleInput""";
+
 void main() {
   initializeLogging("verbose");
+
   test('Day$dayString - Part A', () async {
-    String input = """$exampleInput""";
     int expectation = $exampleExpectation;
-    var day = Day$dayString(input);
+    var day = Day$dayString(example);
     expect(day.solvePartA(), expectation);
   });
 
   test('Day$dayString - Part B', () async {
-    String input = """$exampleInput""";
     int expectation = 0;
-    var day = Day$dayString(input);
+    var day = Day$dayString(example);
     expect(day.solvePartB(), expectation);
   });
 }

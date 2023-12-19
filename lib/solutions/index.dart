@@ -16,3 +16,4 @@ export 'day10.dart';
 export 'day15.dart';
 export 'day16.dart';
 export 'day18.dart';
+export 'day19.dart';
